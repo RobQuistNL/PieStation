@@ -1,0 +1,32 @@
+{
+  "name": "PieStation",
+  "version": "0.0.1",
+  "description": "Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, video, beacons 
+and more! Domotica for the win!",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.10.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/RobQuistNL/PieStation"
+  },
+  "keywords": [
+    "pi",
+    "remote",
+    "infrared",
+    "control",
+    "domotica",
+    "434"
+  ],
+  "author": "Rob Quist",
+  "license": "Apache License 2.0",
+  "bugs": {
+    "url": "https://github.com/RobQuistNL/PieStation/issues"
+  },
+  "homepage": "https://github.com/RobQuistNL/PieStation"
+}
