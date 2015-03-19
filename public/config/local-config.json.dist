@@ -1,0 +1,10 @@
+//Copy this JSON file to your own needs (also remove this comment)
+{
+    "background": {
+        "images": [
+            "http://myimage",
+            "http://myotherimage"
+        ],
+        "timeout": 2000
+    }
+}

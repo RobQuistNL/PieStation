@@ -19,3 +19,6 @@ Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, vide
 
 - Run ``npm install``
 - Edit piestation.init to your wish (change locations) - copy file to /etc/init.d, run update-rc.d piestation
+
+# Local HTML
+This is the local HTML to be displayed on the raspberry (connect to e.g. your TV for a nice overview)

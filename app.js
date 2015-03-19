@@ -9,7 +9,7 @@ var lirc = require("./modules/lirc.js");
 lirc.initialize();
 
 // Define static HTML files
-app.use(express.static(__dirname + '/html'));
+app.use(express.static(__dirname + '/public'));
 
 // define GET request for /send/deviceName/buttonName
 app.get('/send/:device/:key', function(req, res) {

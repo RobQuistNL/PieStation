@@ -26,3 +26,8 @@ node_modules
 
 # Users Environment Variables
 .lock-wscript
+
+# Custom config stuff
+public/config/*.json
+
+.idea
