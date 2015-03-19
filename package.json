@@ -1,8 +1,7 @@
 {
   "name": "PieStation",
   "version": "0.0.1",
-  "description": "Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, video, beacons 
-and more! Domotica for the win!",
+  "description": "Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, video, beacons and more! Domotica for the win!",
   "main": "app.js",
   "dependencies": {
     "express": "^4.10.2"
