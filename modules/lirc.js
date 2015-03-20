@@ -39,7 +39,7 @@
      */
     module.exports.getDevice = function (error, stdout, stderr) {
         if(error) {
-            console.log("irsend not available.");
+            console.log("irsend (LIRC) not available - skipping IR support.");
             return;
         }
         var lines = stderr.split("\n");
