@@ -19,7 +19,7 @@ app.get('/send/:device/:key', function(req, res) {
 
     // Make sure that the user has requested a valid device
     if(!devices.hasOwnProperty(deviceName)) {
-        res.send("invalid device");
+        res.send("Unknown device");
         return;
     }
 
@@ -33,7 +33,7 @@ app.get('/send/:device/:key', function(req, res) {
         }
     }
     if(!deviceKeyFound) {
-        res.send("invalid key number: "+key);
+        res.send("Invalid key number: "+key);
         return;
     }
 
