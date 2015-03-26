@@ -22,7 +22,7 @@ Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, vide
 - To install and make sure the service runs every time you boot the pi, run:
 ```bash
 sudo mkdir /var/piestation
-sudo chmod pi /var/piestation
+sudo chown pi /var/piestation
 sudo apt-get update && sudo apt-get install git npm -y
 wget http://node-arm.herokuapp.com/node_latest_armhf.deb
 sudo dpkg -i node_latest_armhf.deb
@@ -30,7 +30,9 @@ git clone https://github.com/RobQuistNL/PieStation.git /var/piestation
 cd /var/piestation
 npm config set registry http://registry.npmjs.org/
 npm install
-sudo cp /var/piestation/piestation.init /etc/init.d/piestation
+sudo npm install -g nodemon
+sudo cp /var/piestation/dist/piestation.init /etc/init.d/piestation
+sudo chmod +x /etc/init.d/piestation
 sudo update-rc.d piestation defaults
 ```
 
@@ -69,7 +71,7 @@ sudo cp ~/lircd.conf /etc/lirc/lircd.conf
 Copied from here: https://github.com/MobilityLab/TransitScreen/wiki/Raspberry-Pi
 
 ```
-sudo apt-get install matchbox midori chromium x11-xserver-utils -y
+sudo apt-get install matchbox midori chromium unclutter x11-xserver-utils -y
 sudo chmod +x /var/piestation/dist/openbrowser
 ```
 

@@ -11,7 +11,7 @@
 
 dir="/var/piestation"
 user="root"
-cmd="/usr/local/bin/node /var/piestation/app.js"
+cmd="/usr/local/bin/nodemon /var/piestation/app.js"
 
 name=`basename $0`
 pid_file="/var/run/$name.pid"

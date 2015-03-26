@@ -13,8 +13,17 @@ $.getJSON( "/config/local-config.json", function( data ) {
         preload: true,
         delay: window.config.background.timeout,
         timer: false,
-        transition: 'random',
-        animation: 'random'
+        transitionDuration: 0,
+        transition: 'none',
+        animation: 'none'
     });
 
+});
+
+socket.on('localevent', function(data){
+    switch (data.action) {
+        case 'refresh':
+            window.location = window.location;
+            break;
+    }
 });
