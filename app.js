@@ -18,13 +18,13 @@ app.get('/send/:device/:key', function(req, res) {
     var key = req.param("key").toUpperCase();
 
     // Make sure that the user has requested a valid device
-    if(!devices.hasOwnProperty(deviceName)) {
+    if(!lirc.devices.hasOwnProperty(deviceName)) {
         res.send("Unknown device");
         return;
     }
 
     // Make sure that the user has requested a valid key/button
-    var device = devices[deviceName];
+    var device = lirc.devices[deviceName];
     var deviceKeyFound = false;
     for(var i = 0; i < device.length; i++) {
         if(device[i] === key) {
@@ -39,7 +39,7 @@ app.get('/send/:device/:key', function(req, res) {
 
     // send command to irsend
     var command = "irsend SEND_ONCE "+deviceName+" "+key;
-    exec(command, function(error, stdout, stderr){
+    lirc.exec(command, function(error, stdout, stderr){
         if(error)
             res.send("Error sending command");
         else

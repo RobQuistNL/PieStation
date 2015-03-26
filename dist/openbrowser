@@ -1,0 +1,10 @@
+#!/bin/sh
+xset -dpms
+xset s off
+unclutter &
+matchbox-window-manager &
+chromium --kiosk --incognito http://localhost/local
+#epiphany-browser http://localhost/local
+#sleep 2s # give it time to start
+#echo key F11 | xte # simulate pressing the full screen key
+#midori -e Fullscreen -a http://localhost/local

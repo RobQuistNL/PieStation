@@ -3,7 +3,7 @@
     "background": {
         "images": [
             "http://myimage",
-            "http://myotherimage"
+            "/local/backgrounds/myimage.jpg"
         ],
         "timeout": 2000
     }

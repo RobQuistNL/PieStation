@@ -38,15 +38,48 @@ sudo update-rc.d piestation defaults
 ```bash
 sudo apt-get update && sudo apt-get install lirc -y
 sudo cp /var/piestation/dist/hardware.conf.lirc /etc/lirc/hardware.conf
-sudo echo "
-lirc_dev
-lirc_rpi gpio_in_pin=23 gpio_out_pin=22" >> /etc/modules
+echo 'lirc_dev' | sudo tee --append /etc/modules > /dev/null
+echo 'lirc_rpi gpio_in_pin=23 gpio_out_pin=22' | sudo tee --append /etc/modules > /dev/null
 sudo /etc/init.d/lirc restart
 ```
 
+Edit your /boot/config.txt file and add:
+```
+dtoverlay=lirc-rpi,gpio_in_pin=23,gpio_out_pin=22
+```
 
-- Run ``npm install``
-- Edit piestation.init to your wish (change locations) - copy file to /etc/init.d, run update-rc.d piestation
+Make sure you put in the right lirc.conf files with your remotes into /etc/lirc/lircd.conf - check out the lirc docs on how to do so.
+
+- Making your own remotes:
+```
+irrecord --list-namespace # Check out what keys you can use
+sudo /etc/init.d/lirc stop # Disable the lirc service
+irrecord -d /dev/lirc0 ~/lircd.conf # Record!
+```
+
+When you're done, edit the conf file nano ~/lircd.conf and change the name line to the name you want your device to be.
+Lastly, move the new configuration into LIRC and start it back up!
+
+```
+sudo cp ~/lircd.conf /etc/lirc/lircd.conf
+```
+
+- Setup local browser to be opened fullscreen (the local PieStation screen, for your TV or something)
+
+Copied from here: https://github.com/MobilityLab/TransitScreen/wiki/Raspberry-Pi
+
+```
+sudo apt-get install matchbox midori chromium x11-xserver-utils -y
+sudo chmod +x /var/piestation/dist/openbrowser
+```
+
+Make sure to enable auto login:
+http://elinux.org/RPi_Debian_Auto_Login
+
+Then add the following to your users' .profile
+```
+xinit /var/piestation/dist/openbrowser
+```
 
 # Local HTML
 This is the local HTML to be displayed on the raspberry (connect to e.g. your TV for a nice overview)
