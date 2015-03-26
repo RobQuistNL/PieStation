@@ -1,0 +1,49 @@
+# Please make this file available to others
+# by sending it to <lirc@bartelmus.de>
+#
+# this config file was automatically generated
+# using lirc-0.9.0-pre1(default) on Sat Mar 21 19:51:00 2015
+#
+# contributed by
+#
+# brand:                       /home/pi/sonytv
+# model no. of remote control: Sony
+# devices being controlled by this remote: 1
+#
+
+begin remote
+
+  name  sonytv
+  bits           12
+  flags SPACE_ENC|CONST_LENGTH
+  eps            30
+  aeps          100
+
+  header       2431   550
+  one          1241   545
+  zero          645   545
+  gap          44733
+  min_repeat      2
+#  suppress_repeat 2
+#  uncomment to suppress unwanted repeats
+  toggle_bit_mask 0x0
+
+      begin codes
+          KEY_VIDEO                0xA50
+          KEY_VIDEO                0xA50
+          KEY_VOLUMEUP             0x490
+          KEY_VOLUMEDOWN           0xC90
+          KEY_CHANNELUP            0x090
+          KEY_CHANNELDOWN          0x890
+          KEY_EXIT                 0xC70
+          KEY_LEFT                 0x2D0
+          KEY_RIGHT                0xCD0
+          KEY_UP                   0x2F0
+          KEY_DOWN                 0xAF0
+          KEY_OK                   0xA70
+          KEY_BACK                 0xC70
+          KEY_HOME                 0x070
+          KEY_MUTE                 0x290
+      end codes
+
+end remote
