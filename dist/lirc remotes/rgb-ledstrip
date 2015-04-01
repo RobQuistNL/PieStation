@@ -58,3 +58,37 @@ begin remote
       end codes
 
 end remote
+
+# KEY_POWER on
+# KEY_POWER2 off
+
+# KEY_BRIGHTNESSUP
+# KEY_BRIGHTNESSDOWN
+# KEY_RED
+# KEY_GREEN
+# KEY_BLUE
+# KEY_0 (white)
+#
+# KEY_1 flash
+# KEY_2 strobe
+# KEY_3 fade
+# KEY_4 smooth
+#
+#
+# red
+# KEY_BRL_DOT1
+# KEY_BRL_DOT2
+# KEY_BRL_DOT3
+# KEY_BRL_DOT4
+#
+# green
+# KEY_BRL_DOT5
+# KEY_BRL_DOT6
+# KEY_BRL_DOT7
+# KEY_BRL_DOT8
+#
+# blue
+# KEY_F3
+# KEY_F4
+# KEY_F5
+# KEY_F6
