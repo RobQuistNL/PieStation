@@ -1,0 +1,60 @@
+# Please make this file available to others
+# by sending it to <lirc@bartelmus.de>
+#
+# this config file was automatically generated
+# using lirc-0.9.0-pre1(default) on Wed Apr  1 22:27:01 2015
+#
+# contributed by
+#
+# brand:                       /home/pi/ledstrip.conf
+# model no. of remote control: ledstrip
+# devices being controlled by this remote:
+#
+
+begin remote
+
+  name  ledstrip
+  bits           16
+  flags SPACE_ENC
+  eps            30
+  aeps          100
+
+  header       9024  4497
+  one           612  1657
+  zero          612   516
+  ptrail        609
+  repeat       9023  2220
+  pre_data_bits   16
+  pre_data       0xF7
+  gap          41591
+  repeat_gap   97364
+  toggle_bit_mask 0x0
+
+      begin codes
+          KEY_POWER                0xC03F
+          KEY_POWER2               0x40BF
+          KEY_BRIGHTNESSUP         0x00FF
+          KEY_BRIGHTNESSDOWN       0x807F
+          KEY_RED                  0x20DF
+          KEY_GREEN                0xA05F
+          KEY_BLUE                 0x609F
+          KEY_0                    0xE01F
+          KEY_1                    0xD02F
+          KEY_2                    0xF00F
+          KEY_3                    0xC837
+          KEY_4                    0xE817
+          KEY_BRL_DOT1             0x10EF
+          KEY_BRL_DOT2             0x30CF
+          KEY_BRL_DOT3             0x08F7
+          KEY_BRL_DOT4             0x28D7
+          KEY_BRL_DOT5             0x906F
+          KEY_BRL_DOT6             0xB04F
+          KEY_BRL_DOT7             0x8877
+          KEY_BRL_DOT8             0xA857
+          KEY_F3                   0x50AF
+          KEY_F4                   0x708F
+          KEY_F5                   0x48B7
+          KEY_F6                   0x6897
+      end codes
+
+end remote
