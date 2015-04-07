@@ -29,7 +29,7 @@ begin remote
   toggle_bit_mask 0x0
 
       begin codes
-          KEY_VIDEO                0xA50
+          KEY_SLEEP                0xA90
           KEY_VIDEO                0xA50
           KEY_VOLUMEUP             0x490
           KEY_VOLUMEDOWN           0xC90

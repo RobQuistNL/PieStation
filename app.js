@@ -11,10 +11,10 @@ app.use(express.static(__dirname + '/public'));
 
 
 io.on('connection', function(socket){
-    console.log('a user connected');
+    //console.log('a user connected');
 
     socket.on('disconnect', function(){
-        console.log('user disconnected');
+        //console.log('user disconnected');
     });
 
     //Emit all local events through (ofcourse identification of devices is still todo)
@@ -59,9 +59,9 @@ app.get('/send/:device/:key', function(req, res) {
         if(error) {
             res.send("Error sending command");
         } else {
-            res.send("Successfully sent command");
+            res.send("Dun send");
         }
-    });
+    }); 
 });
 
 app.get('/get/devices', function(req, res) {

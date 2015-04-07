@@ -3,260 +3,74 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
 
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <style>
-            body {
-                padding-top: 50px;
-                padding-bottom: 20px;
-            }
-        </style>
-        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
-        <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <style>
+        body {
+            padding-top: 50px;
+            padding-bottom: 20px;
+        }
+    </style>
+    <link rel="stylesheet" href="css/jasny-bootstrap.css">
+    <link rel="stylesheet" href="css/navmenu-reveal.css">
+    <link rel="stylesheet" href="css/main.css">
 
-        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-        <script src="/socket.io/socket.io.js"></script>
-        <script>
-            var socket = io();
-        </script>
-    </head>
-    <body>
-        <!--[if lt IE 8]>
-            <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Project name</a>
-        </div>
-        <div id="navbar" class="navbar-collapse collapse">
-          <form class="navbar-form navbar-right" role="form">
-            <div class="form-group">
-              <input type="text" placeholder="Email" class="form-control">
-            </div>
-            <div class="form-group">
-              <input type="password" placeholder="Password" class="form-control">
-            </div>
-            <button type="submit" class="btn btn-success">Sign in</button>
-          </form>
-        </div><!--/.navbar-collapse -->
-      </div>
-    </nav>
+    <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+    </script>
+</head>
+<body>
+    <div class="navmenu navmenu-default navmenu-fixed-left" style="left:-300px;"><!--Fix for new bootstrap + jasny-->
+        <a class="navmenu-brand" href="#">Rob's sweet ass mansion</a>
+        <ul class="nav navmenu-nav">
+            <li><a href="home.html">Home</a></li>
+        </ul>
+        <ul class="nav navmenu-nav">
+            <li><a href="tv.html">TV</a></li>
+            <li><a href="led.html">Verlichting</a></li>
+            <li><a href="irdevices.html">Alle IR apparaten</a></li>
+            <li><a href="youtube.html">Youtube</a></li>
+            <!--<li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Music & video <b class="caret"></b></a>
+                <ul class="dropdown-menu navmenu-nav">
+                    <li><a href="youtube.html">Youtube</a></li>
+                    <li><a href="soundcloud.html">Soundcloud</a></li>
+                    <li class="divider"></li>
+                    <li class="dropdown-header">Sweeet</li>
+                    <li><a href="#">Andere</a></li>
+                    <li><a href="#">Random</a></li>
+                    <li><a href="#">Crap</a></li>
+                </ul>
+            </li>-->
 
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-        <h1>Hello, world!</h1>
-        <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-          <p><a id="refreshTv" class="btn btn-primary btn-lg" href="#" role="button">Refresh local &raquo;</a></p>
-          <p><a id="restartNode" class="btn btn-primary btn-lg" href="#" role="button">Restart node! &raquo;</a></p>
-          <script type="text/javascript">
-              $('#refreshTv').click(function(){
-                  socket.emit('localevent', {action: "refresh"});
-              });
-
-              $('#restartNode').click(function(){
-                  socket.emit('restart', '');
-              });
-          </script>
-      </div>
+        </ul>
     </div>
 
-    <div class="container">
-
-        <div class="row">
-            <div class="col-md-12">
-                Search on YouTube: <input type="text" class='search_input' /><br/>
-                <a id="stopVideo" class="btn btn-danger"><i class="glyphicon glyphicon-stop"></i></a>
-                <a id="pauseVideo" class="btn btn-warning"><i class="glyphicon glyphicon-pause"></i></a>
-                <a id="resumeVideo" class="btn btn-info"><i class="glyphicon glyphicon-play"></i></a>
-            </div>
+    <div>
+        <div class="navbar navbar-default navbar-fixed-top">
+            <button id="toggleOffcanvas" type="button" class="navbar-toggle" data-toggle="offcanvas" data-recalc="false" data-target=".navmenu" data-canvas=".canvas">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
         </div>
 
-        <div class="row" id="youtubeResult">
-        </div>
-
-        <!-- Search for a youtube video to play on local screen -->
-        <script type="text/javascript">
-            $(".search_input").keyup(function() {
-                var search_input = $(this).val();
-                var keyword= encodeURIComponent(search_input);
-                // Youtube API
-                var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=10&v=2&alt=jsonc';
-
-                var items = [];
-                $.ajax ({
-                    type: "GET",
-                    url: yt_url,
-                    dataType:"jsonp",
-                    success: function(response) {
-                        $("#youtubeResult").html("");
-                        if(response.data.items) {
-                            $.each(response.data.items, function(i,data) {
-                                var video_id=data.id;
-                                var video_title=data.title;
-                                var video_viewCount=data.viewCount;
-
-                                items.push(
-                                    '<div class="media">' +
-                                        '<div class="media-left">' +
-                                            //'<a href="#">' +
-                                                '<img class="media-object" src="http://img.youtube.com/vi/'+video_id+'/default.jpg" alt="' + video_title + '">' +
-                                            //'</a>' +
-                                        '</div>' +
-                                        '<div class="media-body">' +
-                                            '<h4 class="media-heading">' + video_title + '</h4>' +
-                                            video_viewCount + ' views' +
-                                            '<br/>' +
-                                            '<a data-id="'+video_id+'" class="youtubevideo btn btn-primary" role="button"><i class="glyphicon glyphicon-play"></i> Play</a>' +
-                                        '</div>' +
-                                    '</div>'
-                                );
-
-                                /* Another template (i don't like that one
-                                items.push('<div class="col-sm-6 col-md-4">' +
-                                        '<div class="thumbnail">' +
-                                        '<img src="http://img.youtube.com/vi/'+video_id+'/default.jpg" width="242" height="200" alt="'+ video_title +'">' +
-                                        '<div class="caption">' +
-                                        '<h3>' + video_title + '</h3>' +
-                                        '<p>'+video_viewCount+' views</p>' +
-                                        '<p><a data-id="'+video_id+'" class="youtubevideo btn btn-primary" role="button">Play</a>' +
-                                        //'<a href="#" class="btn btn-default" role="button">Button</a></p>' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '</div>'
-                                );*/
-                            });
-                            //var video_frame="<iframe width='640' height='385' src='http://www.youtube.com/embed/"+video_id+"' frameborder='0' type='text/html'></iframe>";
-                            //var final="<div id='title'>"+video_title+"</div><div>"+video_frame+"</div><div id='count'>"+video_viewCount+" Views</div>";
-                            //$("#result").html(final); // Result
-                            $( "<ul/>", {
-                                html: items.join("")
-                            }).appendTo( "#youtubeResult" );
-                        } else {
-                            $("#youtubeResult").html("No results");
-                        }
-                        $('.youtubevideo').click(function(event) {
-                            var videoId = $(this).attr('data-id');
-                            socket.emit('localevent', {action: "youtube", do: "newvideo", video: videoId});
-                        });
-                    }
-                });
-            });
-
-            $('#stopVideo').click(function(event) {
-                socket.emit('localevent', {action: "youtube", do: "stopvideo"});
-            });
-            $('#resumeVideo').click(function(event) {
-                socket.emit('localevent', {action: "youtube", do: "resumevideo"});
-            });
-            $('#pauseVideo').click(function(event) {
-                socket.emit('localevent', {action: "youtube", do: "pausevideo"});
-            });
-        </script>
-
-        <div class="row">
-            <div class="col-md-12 well well-sm">
-                <table class="table remote">
-                    <tr>
-                        <td><a data-device='sonytv' data-key='KEY_VOLUMEUP' class='devicebutton btn btn-info'><i class="glyphicon glyphicon-volume-up"></i></a></td>
-                        <td></td>
-                        <td><a data-device='humax' data-key='KEY_CHANNELUP' class='devicebutton btn btn-info'><i class="glyphicon glyphicon-arrow-up"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td><a data-device='sonytv' data-key='KEY_VOLUMEDOWN' class='devicebutton btn btn-info'><i class="glyphicon glyphicon-volume-down"></i></a></td>
-                        <td></td>
-                        <td><a data-device='humax' data-key='KEY_CHANNELDOWN' class='devicebutton btn btn-info'><i class="glyphicon glyphicon-arrow-down"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><a data-device='sonytv' data-key='KEY_MUTE' class='devicebutton btn btn-danger'><i class="glyphicon glyphicon-volume-off"></i></a></td>
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
-
-            <div class="col-md-12">
-                <table class="table remote">
-                    <tr>
-                        <td><a data-device='humax' data-key='KEY_1' class='devicebutton btn btn-default'><H1>1</H1></a></td>
-                        <td><a data-device='humax' data-key='KEY_2' class='devicebutton btn btn-default'><H1>2</H1></a></td>
-                        <td><a data-device='humax' data-key='KEY_3' class='devicebutton btn btn-default'><H1>3</H1></a></td>
-                    </tr>
-                    <tr>
-                        <td><a data-device='humax' data-key='KEY_4' class='devicebutton btn btn-default'><H1>4</H1></a></td>
-                        <td><a data-device='humax' data-key='KEY_5' class='devicebutton btn btn-default'><H1>5</H1></a></td>
-                        <td><a data-device='humax' data-key='KEY_6' class='devicebutton btn btn-default'><H1>6</H1></a></td>
-                    </tr>
-                    <tr>
-                        <td><a data-device='humax' data-key='KEY_7' class='devicebutton btn btn-default'><H1>7</H1></a></td>
-                        <td><a data-device='humax' data-key='KEY_8' class='devicebutton btn btn-default'><H1>8</H1></a></td>
-                        <td><a data-device='humax' data-key='KEY_9' class='devicebutton btn btn-default'><H1>9</H1></a></td>
-                    </tr>
-                    <tr>
-                        <td></td>
-                        <td><a data-device='humax' data-key='KEY_0' class='devicebutton btn btn-default'><H1>0</H1></a></td>
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
-
+        <div class="container" id="realcontent">
         </div>
     </div>
-      <!-- All IR devices -->
-      <div class="row">
-        <div class="col-md-12">
-          <h2>IR Devices / buttons</h2>
-            <div id="buttons"></div>
-          <script type="text/javascript">
-              $.getJSON( "get/devices", function( devices ) {
-                  var items = [];
-                  $.each( devices, function( deviceKey, deviceVal ) {
-                      items.push( "<li>" + deviceKey + "<ul>" );
-                      $.each( deviceVal, function( key, val ) {
-                          items.push( "<li><a data-device='"+deviceKey+"' data-key='"+val+"' class='devicebutton btn btn-default'>" + val + "</a></li>" );
-                      });
-                      items.push( "</ul></li>" );
 
-                  });
-
-                  $( "<ul/>", {
-                      html: items.join( "" )
-                  }).appendTo( "#buttons" );
-
-                  $('.devicebutton').click(function(event) {
-                      var device = $(this).attr('data-device');
-                      var key = $(this).attr('data-key');
-                      $.ajax({url: "send/"+device+"/"+key+"?"+new Date().getTime()});
-                  });
-              });
-
-
-          </script>
-        </div>
-      </div>
-
-      <hr>
-
-      <footer>
-        <p>&copy; Company 2015</p>
-      </footer>
-    </div> <!-- /container -->
-        <script src="js/vendor/bootstrap.min.js"></script>
-        <script src="js/main.js"></script>
-    </body>
+    <script src="js/vendor/bootstrap.min.js"></script>
+    <script src="js/vendor/jasny-bootstrap.js"></script>
+    <script src="js/main.js"></script>
+</body>
 </html>
