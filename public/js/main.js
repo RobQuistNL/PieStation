@@ -4,9 +4,7 @@ $("ul.nav li a").on('click', function(event) {
         $("#realcontent").load("pages/" + url, null, function() {
             $('.devicebutton').unbind();
             $('.devicebutton').click(function(event) {
-                var device = $(this).attr('data-device');
-                var key = $(this).attr('data-key');
-                $.ajax({url: "send/"+device+"/"+key+"?"+new Date().getTime()});
+                sendIRKey($(this).attr('data-device'), $(this).attr('data-key'));
             });
         });
         $("#toggleOffcanvas").click();
@@ -15,3 +13,7 @@ $("ul.nav li a").on('click', function(event) {
 });
 
 $("#realcontent").load("pages/home.html");
+
+function sendIRKey(device, key) {
+    $.ajax({url: "send/"+device+"/"+key+"?"+new Date().getTime()});
+}

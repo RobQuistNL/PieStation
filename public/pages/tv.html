@@ -1,6 +1,3 @@
-<div class="page-header">
-    <h1>TV</h1>
-</div>
 <div class="row">
     <div class="col-md-12 well well-sm">
         <table class="table remote">
@@ -26,7 +23,57 @@
             </tr>
         </table>
     </div>
+</div>
 
+<div class="row" id="channels"></div>
+
+<script type="text/javascript">
+    $.getJSON("config/channels.json", function(data) {
+        var items = [];
+        console.log(data);
+        data.sort(function(a,b) { return parseFloat(a.order) - parseFloat(b.order) } );
+        $.each( data, function( key, val ) {
+            items.push(
+                "<div class='col-xs-6 col-md-3'>" +
+                "<a class='channelbutton thumbnail'  data-channel='"+val.channel+"' >" +
+                "<img src='/img/channels/"+val.icon+"' alt='"+val.name+"'>" +
+                "</a>" +
+                "</div>"
+            );
+        });
+
+        $("<section/>", {
+            html: items.join("")
+        }).appendTo("#channels");
+
+        $('.channelbutton').on('click', function(event) {
+            var channel = $(this).attr('data-channel');
+            var remoteDevice = 'humax';
+            var sendingTimeout = 400;
+            var extraTimeout = 0;
+            switch (channel.length) {
+                case 2:
+                    setTimeout(sendIRKey(remoteDevice, 'KEY_0'), extraTimeout);
+                    extraTimeout += sendingTimeout;
+                    break;
+                case 1:
+                    setTimeout(sendIRKey(remoteDevice, 'KEY_0'), extraTimeout);
+                    extraTimeout += sendingTimeout;
+                    setTimeout(sendIRKey(remoteDevice, 'KEY_0'), extraTimeout);
+                    extraTimeout += sendingTimeout;
+                    break;
+            }
+            for (var i=0; i < channel.length; i++) {
+                setTimeout(sendIRKey(remoteDevice, 'KEY_' + channel.charAt(i), extraTimeout + i * sendingTimeout));
+            }
+
+            return false;
+        });
+    });
+
+</script>
+
+<div class="row">
     <div class="col-md-12">
         <table class="table remote">
             <tr>
@@ -51,5 +98,4 @@
             </tr>
         </table>
     </div>
-
 </div>
