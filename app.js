@@ -11,10 +11,10 @@ app.use(express.static(__dirname + '/public'));
 
 
 io.on('connection', function(socket){
-    console.log('a user connected');
+    //console.log('a user connected');
 
     socket.on('disconnect', function(){
-        console.log('user disconnected');
+        //console.log('user disconnected');
     });
 
     //Emit all local events through (ofcourse identification of devices is still todo)
@@ -25,6 +25,24 @@ io.on('connection', function(socket){
     socket.on('restart', function(data) {
         process.exit(0);
     });
+});
+
+app.get('/send/kaku/:letter/:code/:onoff', function(req, res) {
+    var letter = req.param("letter");
+    var code = req.param("code");
+    var onoff = req.param("onoff");
+    console.log('Got ' + letter + ' ' + code + ' ' + onoff);
+    var command="sudo /home/pi/wiringPi/examples/lights/kaku " + letter + " " + code + " " + onoff;
+
+    lirc.exec(command, function(error, stdout, stderr){
+        if(error) {
+            res.send("Error sending command ("+error+stdout+stderr+")");
+        } else {
+            res.send("Dun send" + stdout + stderr);
+        }
+    });
+
+
 });
 
 app.get('/send/:device/:key', function(req, res) {
@@ -59,9 +77,9 @@ app.get('/send/:device/:key', function(req, res) {
         if(error) {
             res.send("Error sending command");
         } else {
-            res.send("Successfully sent command");
+            res.send("Dun send");
         }
-    });
+    }); 
 });
 
 app.get('/get/devices', function(req, res) {
