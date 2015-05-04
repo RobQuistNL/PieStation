@@ -23,7 +23,7 @@ Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, vide
 ```bash
 sudo mkdir /var/piestation
 sudo chown pi /var/piestation
-sudo apt-get update && sudo apt-get install git npm -y
+sudo apt-get update && sudo apt-get upgrade -y && sudo apt-get install git -y
 wget http://node-arm.herokuapp.com/node_latest_armhf.deb
 sudo dpkg -i node_latest_armhf.deb
 git clone https://github.com/RobQuistNL/PieStation.git /var/piestation
