@@ -2,6 +2,7 @@
 var port = 80;
 
 var lirc = require("./modules/lirc.js");
+var exec = require('child_process').exec;
 var alarms = require("./modules/alarms.js").initialize();
 var express = require('express');
 var app = express();
@@ -28,21 +29,22 @@ io.on('connection', function(socket){
 });
 
 app.get('/send/kaku/:letter/:code/:onoff', function(req, res) {
+    // KlikAanKlikUit remote power thingies
+
     var letter = req.param("letter");
     var code = req.param("code");
     var onoff = req.param("onoff");
-    console.log('Got ' + letter + ' ' + code + ' ' + onoff);
-    var command="sudo /home/pi/wiringPi/examples/lights/kaku " + letter + " " + code + " " + onoff;
 
-    lirc.exec(command, function(error, stdout, stderr){
+    console.log('Got KAKU: ' + letter + ' ' + code + ' ' + onoff);
+    var command="sudo /var/wiringPi/examples/lights/kaku " + letter + " " + code + " " + onoff;
+
+    exec(command, function(error, stdout, stderr){
         if(error) {
             res.send("Error sending command ("+error+stdout+stderr+")");
         } else {
-            res.send("Dun send" + stdout + stderr);
+            res.send("Sent command!" + stdout + stderr);
         }
     });
-
-
 });
 
 app.get('/send/:device/:key', function(req, res) {

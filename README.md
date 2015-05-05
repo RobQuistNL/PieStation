@@ -36,7 +36,7 @@ sudo chmod +x /etc/init.d/piestation
 sudo update-rc.d piestation defaults
 ```
 
-- To install LIRC (for IR support) run the following:
+### To install LIRC (for IR support) run the following:
 ```bash
 sudo apt-get update && sudo apt-get install lirc -y
 sudo cp /var/piestation/dist/hardware.conf.lirc /etc/lirc/hardware.conf
@@ -52,7 +52,7 @@ dtoverlay=lirc-rpi,gpio_in_pin=23,gpio_out_pin=22
 
 Make sure you put in the right lirc.conf files with your remotes into /etc/lirc/lircd.conf - check out the lirc docs on how to do so.
 
-- Making your own remotes:
+#### Making your own remotes:
 ```
 irrecord --list-namespace # Check out what keys you can use
 sudo /etc/init.d/lirc stop # Disable the lirc service
@@ -66,7 +66,28 @@ Lastly, move the new configuration into LIRC and start it back up!
 sudo cp ~/lircd.conf /etc/lirc/lircd.conf
 ```
 
-- Setup local browser to be opened fullscreen (the local PieStation screen, for your TV or something)
+### Using 434Mhz transmitters to power on/off devices
+
+Thanks to: http://weejewel.tweakblogs.net/blog/8665/lampen-schakelen-met-een-raspberry-pi.html
+
+Install wiringPi + compile custom binaries (Check blog to see what versions you need, I needed the KaKu version)
+
+```
+cd /var/
+git clone git://git.drogon.net/wiringPi
+git pull origin
+cd wiringPi
+./build
+cd examples
+wget -O lights.zip https://www.dropbox.com/s/nxdrkuk94w9fpqo/lights.zip?dl=1
+unzip lights.zip
+cd lights
+g++ -o kaku kaku.cpp -I/usr/local/include -L/usr/local/lib -lwiringPi
+```
+
+Check out the app.js for the proper commands etc.
+
+### Setup local browser to be opened fullscreen (the local PieStation screen, for your TV or something)
 
 Copied from here: https://github.com/MobilityLab/TransitScreen/wiki/Raspberry-Pi
 
