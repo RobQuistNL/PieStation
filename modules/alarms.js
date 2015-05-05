@@ -5,7 +5,7 @@
     module.exports.cronJob = require('cron').CronJob;
 
     module.exports.checkAlarms = function() {
-        console.log('Alarm happened!');
+        //console.log('Alarm happened!');
     };
 
     module.exports.initialize = function() {

@@ -74,15 +74,16 @@ Install wiringPi + compile custom binaries (Check blog to see what versions you 
 
 ```
 cd /var/
-git clone git://git.drogon.net/wiringPi
-git pull origin
+sudo git clone git://git.drogon.net/wiringPi
 cd wiringPi
-./build
+sudo git pull origin
+sudo ./build
 cd examples
-wget -O lights.zip https://www.dropbox.com/s/nxdrkuk94w9fpqo/lights.zip?dl=1
-unzip lights.zip
+sudo wget -O lights.zip https://www.dropbox.com/s/nxdrkuk94w9fpqo/lights.zip?dl=1
+sudo unzip lights.zip
 cd lights
-g++ -o kaku kaku.cpp -I/usr/local/include -L/usr/local/lib -lwiringPi
+sudo g++ -o kaku kaku.cpp -I/usr/local/include -L/usr/local/lib -lwiringPi
+sudo chmod 0755 kaku
 ```
 
 Check out the app.js for the proper commands etc.
