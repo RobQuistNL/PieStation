@@ -1,0 +1,93 @@
+<div class="page-header">
+    <h1>Youtube</h1>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <input type="text" class='search_input' style="width:100%;"/><br/>
+        <a id="stopVideo" class="btn btn-danger"><i class="glyphicon glyphicon-stop"></i></a>
+        <a id="pauseVideo" class="btn btn-warning"><i class="glyphicon glyphicon-pause"></i></a>
+        <a id="resumeVideo" class="btn btn-info"><i class="glyphicon glyphicon-play"></i></a>
+    </div>
+</div>
+
+<div class="row" id="youtubeResult">
+</div>
+
+<!-- Search for a youtube video to play on local screen -->
+<script type="text/javascript">
+    $(".search_input").keyup(function() {
+        var search_input = $(this).val();
+        var keyword= encodeURIComponent(search_input);
+        // Youtube API
+        var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=10&v=2&alt=jsonc';
+
+        var items = [];
+        $.ajax ({
+            type: "GET",
+            url: yt_url,
+            dataType:"jsonp",
+            success: function(response) {
+                $("#youtubeResult").html("");
+                if(response.data.items) {
+                    $.each(response.data.items, function(i,data) {
+                        var video_id=data.id;
+                        var video_title=data.title;
+                        var video_viewCount=data.viewCount;
+
+                        items.push(
+                                '<div class="media">' +
+                                        '<div class="media-left">' +
+                                    //'<a href="#">' +
+                                        '<img class="media-object" src="http://img.youtube.com/vi/'+video_id+'/default.jpg" alt="' + video_title + '">' +
+                                    //'</a>' +
+                                        '</div>' +
+                                        '<div class="media-body">' +
+                                        '<h4 class="media-heading">' + video_title + '</h4>' +
+                                        video_viewCount + ' views' +
+                                        '<br/>' +
+                                        '<a data-id="'+video_id+'" class="youtubevideo btn btn-primary" role="button"><i class="glyphicon glyphicon-play"></i> Play</a>' +
+                                        '</div>' +
+                                        '</div>'
+                        );
+
+                        /* Another template (i don't like that one
+                         items.push('<div class="col-sm-6 col-md-4">' +
+                         '<div class="thumbnail">' +
+                         '<img src="http://img.youtube.com/vi/'+video_id+'/default.jpg" width="242" height="200" alt="'+ video_title +'">' +
+                         '<div class="caption">' +
+                         '<h3>' + video_title + '</h3>' +
+                         '<p>'+video_viewCount+' views</p>' +
+                         '<p><a data-id="'+video_id+'" class="youtubevideo btn btn-primary" role="button">Play</a>' +
+                         //'<a href="#" class="btn btn-default" role="button">Button</a></p>' +
+                         '</div>' +
+                         '</div>' +
+                         '</div>'
+                         );*/
+                    });
+                    //var video_frame="<iframe width='640' height='385' src='http://www.youtube.com/embed/"+video_id+"' frameborder='0' type='text/html'></iframe>";
+                    //var final="<div id='title'>"+video_title+"</div><div>"+video_frame+"</div><div id='count'>"+video_viewCount+" Views</div>";
+                    //$("#result").html(final); // Result
+                    $( "<ul/>", {
+                        html: items.join("")
+                    }).appendTo( "#youtubeResult" );
+                } else {
+                    $("#youtubeResult").html("No results");
+                }
+                $('.youtubevideo').click(function(event) {
+                    var videoId = $(this).attr('data-id');
+                    socket.emit('localevent', {action: "youtube", do: "newvideo", video: videoId});
+                });
+            }
+        });
+    });
+
+    $('#stopVideo').click(function(event) {
+        socket.emit('localevent', {action: "youtube", do: "stopvideo"});
+    });
+    $('#resumeVideo').click(function(event) {
+        socket.emit('localevent', {action: "youtube", do: "resumevideo"});
+    });
+    $('#pauseVideo').click(function(event) {
+        socket.emit('localevent', {action: "youtube", do: "pausevideo"});
+    });
+</script>

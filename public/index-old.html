@@ -1,0 +1,164 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9" lang=""> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang=""> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <style>
+            body {
+                padding-top: 50px;
+                padding-bottom: 20px;
+            }
+        </style>
+        <link rel="stylesheet" href="css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="css/jasny-bootstrap.min.css">
+        <link rel="stylesheet" href="css/main.css">
+
+        <script src="js/vendor/modernizr-2.8.3-respond-1.4.2.min.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io();
+        </script>
+    </head>
+    <body>
+
+    <nav id="myNavmenu" class="navmenu navmenu-default navmenu-fixed-left offcanvas" role="navigation">
+        <a class="navmenu-brand" href="#">Brand</a>
+        <ul class="nav navmenu-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">Link</a></li>
+            <li><a href="#">Link</a></li>
+        </ul>
+    </nav>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target="#myNavmenu" data-canvas="#myNavmenuCanvas" data-placement="left">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+    </div>
+    <div class="container" id="myNavmenuCanvas">
+        <!-- Main jumbotron for a primary marketing message or call to action -->
+        <div class="jumbotron">
+          <div class="container">
+            <h1>Hello, world!</h1>
+            <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
+              <p><a id="refreshTv" class="btn btn-primary btn-lg" href="#" role="button">Refresh local &raquo;</a></p>
+              <p><a id="restartNode" class="btn btn-primary btn-lg" href="#" role="button">Restart node! &raquo;</a></p>
+              <script type="text/javascript">
+                  $('#refreshTv').click(function(){
+                      socket.emit('localevent', {action: "refresh"});
+                  });
+
+                  $('#restartNode').click(function(){
+                      socket.emit('restart', '');
+                  });
+              </script>
+          </div>
+        </div>
+
+        <div class="container">
+
+
+
+            <div class="row">
+                <div class="col-md-12 well well-sm">
+                    <table class="table remote">
+                        <tr>
+                            <td><a data-device='sonytv' data-key='KEY_VOLUMEUP' class='devicebutton btn btn-info'><i class="glyphicon glyphicon-volume-up"></i></a></td>
+                            <td></td>
+                            <td><a data-device='humax' data-key='KEY_CHANNELUP' class='devicebutton btn btn-info'><i class="glyphicon glyphicon-arrow-up"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td><a data-device='sonytv' data-key='KEY_VOLUMEDOWN' class='devicebutton btn btn-info'><i class="glyphicon glyphicon-volume-down"></i></a></td>
+                            <td></td>
+                            <td><a data-device='humax' data-key='KEY_CHANNELDOWN' class='devicebutton btn btn-info'><i class="glyphicon glyphicon-arrow-down"></i></a></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><a data-device='sonytv' data-key='KEY_MUTE' class='devicebutton btn btn-danger'><i class="glyphicon glyphicon-volume-off"></i></a></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="col-md-12">
+                    <table class="table remote">
+                        <tr>
+                            <td><a data-device='humax' data-key='KEY_1' class='devicebutton btn btn-default'><H1>1</H1></a></td>
+                            <td><a data-device='humax' data-key='KEY_2' class='devicebutton btn btn-default'><H1>2</H1></a></td>
+                            <td><a data-device='humax' data-key='KEY_3' class='devicebutton btn btn-default'><H1>3</H1></a></td>
+                        </tr>
+                        <tr>
+                            <td><a data-device='humax' data-key='KEY_4' class='devicebutton btn btn-default'><H1>4</H1></a></td>
+                            <td><a data-device='humax' data-key='KEY_5' class='devicebutton btn btn-default'><H1>5</H1></a></td>
+                            <td><a data-device='humax' data-key='KEY_6' class='devicebutton btn btn-default'><H1>6</H1></a></td>
+                        </tr>
+                        <tr>
+                            <td><a data-device='humax' data-key='KEY_7' class='devicebutton btn btn-default'><H1>7</H1></a></td>
+                            <td><a data-device='humax' data-key='KEY_8' class='devicebutton btn btn-default'><H1>8</H1></a></td>
+                            <td><a data-device='humax' data-key='KEY_9' class='devicebutton btn btn-default'><H1>9</H1></a></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td><a data-device='humax' data-key='KEY_0' class='devicebutton btn btn-default'><H1>0</H1></a></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+          <!-- All IR devices -->
+          <div class="row">
+            <div class="col-md-12">
+              <h2>IR Devices / buttons</h2>
+                <div id="buttons"></div>
+              <script type="text/javascript">
+                  $.getJSON( "get/devices", function( devices ) {
+                      var items = [];
+                      $.each( devices, function( deviceKey, deviceVal ) {
+                          items.push( "<li>" + deviceKey + "<ul>" );
+                          $.each( deviceVal, function( key, val ) {
+                              items.push( "<li><a data-device='"+deviceKey+"' data-key='"+val+"' class='devicebutton btn btn-default'>" + val + "</a></li>" );
+                          });
+                          items.push( "</ul></li>" );
+
+                      });
+
+                      $( "<ul/>", {
+                          html: items.join( "" )
+                      }).appendTo( "#buttons" );
+
+                      $('.devicebutton').click(function(event) {
+                          var device = $(this).attr('data-device');
+                          var key = $(this).attr('data-key');
+                          $.ajax({url: "send/"+device+"/"+key+"?"+new Date().getTime()});
+                      });
+                  });
+
+
+              </script>
+            </div>
+          </div>
+
+          <hr>
+
+          <footer>
+            <p>&copy; Company 2015</p>
+          </footer>
+    </div> <!-- /container -->
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/jasny-bootstrap.min.js"></script>
+        <script src="js/main.js"></script>
+    </body>
+</html>
