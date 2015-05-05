@@ -34,3 +34,10 @@ public/config/*.json
 
 public/local/backgrounds
 !public/local/backgrounds/.gitdir
+
+node_latest_armhf.deb
+node_latest_armhf.deb.1
+node_latest_armhf.deb.2
+npm-backup
+npm-backup2
+

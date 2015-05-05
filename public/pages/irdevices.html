@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <div class="page-header">
     <h1>Alle IR devices</h1>
 </div>
@@ -27,4 +28,35 @@
     });
 
 
+=======
+<div class="page-header">
+    <h1>Alle IR devices</h1>
+</div>
+<p class="lead">Hier staan alle ingelezen infraroodknoppen</p>
+<div id="buttons"></div>
+<script type="text/javascript">
+    $.getJSON( "get/devices", function( devices ) {
+        var items = [];
+        $.each( devices, function( deviceKey, deviceVal ) {
+            items.push( "<li>" + deviceKey + "<ul>" );
+            $.each( deviceVal, function( key, val ) {
+                items.push( "<li><a data-device='"+deviceKey+"' data-key='"+val+"' class='devicebutton btn btn-default'>" + val + "</a></li>" );
+            });
+            items.push( "</ul></li>" );
+
+        });
+
+        $( "<ul/>", {
+            html: items.join( "" )
+        }).appendTo( "#buttons" );
+
+        $('.devicebutton').click(function(event) {
+            var device = $(this).attr('data-device');
+            var key = $(this).attr('data-key');
+            $.ajax({url: "send/"+device+"/"+key+"?"+new Date().getTime()});
+        });
+    });
+
+
+>>>>>>> Stashed changes
 </script>
