@@ -93,3 +93,12 @@ lirc.initialize();
 http.listen(port, function(){
     console.log('listening on *:'+port);
 });
+
+process.on('uncaughtException', function(err) {
+    if(err.errno === 'EADDRINUSE') {
+        console.log('Listening address on port ' + port + ' is in use or unavailable.');
+        process.exit(1);
+    } else {
+        throw err;
+    }
+});
