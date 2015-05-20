@@ -4,9 +4,10 @@
   "description": "Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, video, beacons and more! Domotica for the win!",
   "main": "app.js",
   "dependencies": {
+    "cron": "~1.0.4",
     "express": "^4.10.2",
-    "socket.io": "^1.3.5",
-    "cron": "~1.0.4"
+    "prettycron": "^0.10.0",
+    "socket.io": "^1.3.5"
   },
   "devDependencies": {},
   "scripts": {
