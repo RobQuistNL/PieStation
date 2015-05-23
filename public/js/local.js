@@ -13,9 +13,15 @@ $.getJSON( "/config/local-config.json", function( data ) {
         preload: true,
         delay: window.config.background.timeout,
         timer: false,
-        transitionDuration: 0,
-        transition: 'none',
-        animation: 'none'
+
+        animation: 'random',
+        animationDuration: 10000,
+        transition: 'random'
+
+        //Setup these if the transitions of backgrounds are very slow
+        //transitionDuration: 0,
+        //transition: 'none',
+        //animation: 'none'
     });
 
 });
@@ -40,6 +46,12 @@ socket.on('localevent', function(data){
                 case 'stopvideo':
                     stopYoutubeVideo();
                     break;
+                case 'position':
+                    var pos = data.value;
+                    var total = window.ytplayer.getDuration();
+                    var seconds = (total/1000) * pos;
+                    window.ytplayer.seekTo(seconds, true);
+                    break;
             }
             break;
     }
@@ -47,6 +59,7 @@ socket.on('localevent', function(data){
 
 function playYoutubeVideo(videoId) {
     stopYoutubeVideo();
+    $('body').vegas('pause');
 
     if ($('.fullscreen').length == 0) {
         $('body').append('<div class="fullscreen" id="player"></div>');
@@ -64,7 +77,7 @@ function playYoutubeVideo(videoId) {
             'rel': 0,
             'theme': 'dark',
             'iv_load_policy': 3,
-            'vq': 'hd720'
+            'vq': 'hd720' //Put this to hd1080 for better quality (but my htpc cant handle that)
         },
         events: {
             'onReady': function(event) {
@@ -86,6 +99,7 @@ function stopYoutubeVideo() {
     }
 
     $('.fullscreen').remove();
+    $('body').vegas('play');
 }
 
 function refreshComics() {
