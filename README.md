@@ -7,11 +7,21 @@ Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, vide
 - Breadboard
 - IR Receiver (TSOP2236)
 - 434mhz module (TX433)
+- Zotac ZBOX AB02 (For dashboard)
+- TV (For display of dashboard)
+- Some old tablet for the remote webpage
 
 # Software used
 - NodeJS
 - lirc
 - Raspbian
+- wiringPi
+
+# Screenshots
+![The main dashboard (With XKCD and Explosm - youtube will appear over it)](https://raw.githubusercontent.com/RobQuistNL/PieStation/master/screenshots/dashboard.png)
+![The remote webpage](https://raw.githubusercontent.com/RobQuistNL/PieStation/master/screenshots/remote.png)
+
+Click here for more: https://github.com/RobQuistNL/PieStation/tree/master/screenshots
 
 # Installation guide
 
