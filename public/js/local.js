@@ -51,10 +51,44 @@ function playYoutubeVideo(videoId) {
     }
 
     $('.fullscreen').html(
-        "<iframe width='100%' height='100%' src='http://www.youtube.com/embed/"+videoId+"?autoplay=1&controls=0&modestbranding=1&rel=0&theme=dark&iv_load_policy=3&vq=hd1080' frameborder='0' type='text/html'></iframe>"
+        "<iframe width='100%' height='100%' src='http://www.youtube.com/embed/"+videoId+"?autoplay=1&controls=0&modestbranding=1&rel=0&theme=dark&iv_load_policy=3&vq=hd720' frameborder='0' type='text/html'></iframe>"
     );
 }
 
 function stopYoutubeVideo() {
     $('.fullscreen').remove();
 }
+
+function refreshComics() {
+    $.getJSON( "http://projects.dukesoft.nl/getcomics.php", function( data ) {
+        $('#xkcd_title').html(data.xkcd.title);
+        $('#xkcd_description').html(data.xkcd.description);
+        $('#xkcd_image').attr('src', data.xkcd.img);
+        $('#explosm_image').attr('src', data.explosm.img);
+    });
+}
+
+function setGreeting() {
+    var hours = new Date().getHours();
+
+    greeting = 'Gaat es slapen';
+    if (hours >= 6) {
+        greeting = 'Goeiemorgen Rob';
+    }
+    if (hours >= 12) {
+        greeting = 'Goeiemiddag Rob';
+    }
+    if (hours >= 18) {
+        greeting = 'Goeieavond Rob';
+    }
+    if (hours >= 23) {
+        greeting = 'Goeienacht Rob';
+    }
+
+    $('#greeting').html(greeting);
+}
+
+setInterval("refreshComics()",60*60*1000); //Every hour
+setInterval("setGreeting()",60*1000); //Every minute
+refreshComics();
+setGreeting();
