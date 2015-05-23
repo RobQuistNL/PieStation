@@ -32,10 +32,10 @@ socket.on('localevent', function(data){
                     playYoutubeVideo(data.video);
                     break;
                 case 'pausevideo':
-                    pauseYoutubeVideo();
+                    window.ytplayer.pauseVideo();
                     break;
                 case 'resumevideo':
-                    resumeYoutubeVideo();
+                    window.ytplayer.playVideo();
                     break;
                 case 'stopvideo':
                     stopYoutubeVideo();
@@ -46,16 +46,45 @@ socket.on('localevent', function(data){
 });
 
 function playYoutubeVideo(videoId) {
+    stopYoutubeVideo();
+
     if ($('.fullscreen').length == 0) {
-        $('body').append('<div class="fullscreen"></div>');
+        $('body').append('<div class="fullscreen" id="player"></div>');
     }
 
-    $('.fullscreen').html(
-        "<iframe width='100%' height='100%' src='http://www.youtube.com/embed/"+videoId+"?autoplay=1&controls=0&modestbranding=1&rel=0&theme=dark&iv_load_policy=3&vq=hd720' frameborder='0' type='text/html'></iframe>"
+    /*$('.fullscreen').html(
+        "<iframe id='player' width='100%'  height='100%' src='http://www.youtube.com/embed/"+videoId+"?autoplay=1&controls=0&modestbranding=1&rel=0&theme=dark&iv_load_policy=3&vq=hd720&origin=http://thuis.dukesoft.nl' frameborder='0' type='text/html'></iframe>"
     );
+     */
+    window.ytplayer = new YT.Player('player', {
+        videoId: videoId,
+        playerVars: {
+            'modestbranding': 1,
+            'controls': 0,
+            'rel': 0,
+            'theme': 'dark',
+            'iv_load_policy': 3,
+            'vq': 'hd720'
+        },
+        events: {
+            'onReady': function(event) {
+                event.target.playVideo();
+            },
+            'onStateChange': function(event) {
+                if (event.data == YT.PlayerState.ENDED) {
+                    stopYoutubeVideo();
+                }
+                console.log(event);
+            }
+        }
+    });
 }
 
 function stopYoutubeVideo() {
+    if (window.ytplayer) {
+        window.ytplayer.destroy();
+    }
+
     $('.fullscreen').remove();
 }
 
