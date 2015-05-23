@@ -1,0 +1,49 @@
+<script type="text/javascript">
+
+    if ($.cookie('dokteronline_user') == undefined) {
+        $.cookie('dokteronline_user', prompt('Username?'), { expires: 7*52*5 });
+    }
+
+    if ($.cookie('dokteronline_pass') == undefined) {
+        $.cookie('dokteronline_pass', prompt('Pass?'), { expires: 7*52*5 });
+    }
+
+    fetchDokterOnlineAffiliates($.cookie('dokteronline_user'), $.cookie('dokteronline_pass'));
+
+    function fetchDokterOnlineAffiliates(user, pass) {
+        user = encodeURIComponent(user);
+        pass = encodeURIComponent(pass);
+        $.ajax({
+            type: "POST",
+            url: 'https://secure.dokteronline.com/aff/index.php',
+            data: 'dob_act=login&login='+user+'&wwoord='+pass,
+            success: function(data) {
+                $.ajax({
+                    url: 'https://secure.dokteronline.com/aff/index_aff_n.php?&rs=sjx_aff_fin_oview&rst=&rsrnd=1430836079230',
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        //$('#output1').html(data);
+                    }
+                });
+
+                $.ajax({
+                    url: 'https://secure.dokteronline.com/aff/index_aff_n.php?&rs=sjx_aff_gen_oview&rst=&rsrnd=1430836079233&rsargs[]=2015',
+                    xhrFields: {
+                        withCredentials: true
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        //$('#output2').html(data);
+                    }
+                });
+            }
+        });
+    }
+
+</script>
+
+<div id="output1"></div>
+<div id="output2"></div>
