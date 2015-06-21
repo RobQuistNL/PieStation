@@ -15,7 +15,7 @@ $.getJSON( "/config/local-config.json", function( data ) {
         timer: false,
 
         animation: 'random',
-        animationDuration: 10000,
+        animationDuration: window.config.background.timeout/10,
         transition: 'random'
 
         //Setup these if the transitions of backgrounds are very slow

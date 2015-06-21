@@ -8,6 +8,7 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var lastLedKey = "unknown";
 
 app.use(express.static(__dirname + '/public'));
 
@@ -57,6 +58,11 @@ app.get('/send/:device/:key', function(req, res) {
         res.send("Unknown device");
         return;
     }
+
+    if (deviceName == 'ledstrip') {
+        lastLedKey = key;
+    }
+
     console.log('Got '+deviceName+ ' - ' + key);
 
     // Make sure that the user has requested a valid key/button
@@ -73,6 +79,14 @@ app.get('/send/:device/:key', function(req, res) {
         return;
     }
 
+    sendLirc(deviceName, key, res);
+    if (deviceName != 'ledstrip') {
+        console.log('Sending last led strip key:' + lastLedKey);
+        lirc.exec("irsend SEND_ONCE ledstrip "+lastLedKey, function(error, stdout, stderr){});
+    }
+});
+
+function sendLirc(deviceName, key, res) {
     // send command to irsend
     var command = "irsend SEND_ONCE "+deviceName+" "+key;
     lirc.exec(command, function(error, stdout, stderr){
@@ -81,8 +95,8 @@ app.get('/send/:device/:key', function(req, res) {
         } else {
             res.send("Dun send");
         }
-    }); 
-});
+    });
+}
 
 app.get('/get/devices', function(req, res) {
     return res.send(lirc.devices);

@@ -49,22 +49,22 @@
         $('.channelbutton').on('click', function(event) {
             var channel = $(this).attr('data-channel');
             var remoteDevice = 'humax';
-            var sendingTimeout = 400;
+            var sendingTimeout = 500;
             var extraTimeout = 0;
             switch (channel.length) {
                 case 2:
-                    setTimeout(sendIRKey(remoteDevice, 'KEY_0'), extraTimeout);
+                    setTimeout("sendIRKey('"+remoteDevice+"', 'KEY_0')", extraTimeout);
                     extraTimeout += sendingTimeout;
                     break;
                 case 1:
-                    setTimeout(sendIRKey(remoteDevice, 'KEY_0'), extraTimeout);
+                    setTimeout("sendIRKey('"+remoteDevice+"', 'KEY_0')", extraTimeout);
                     extraTimeout += sendingTimeout;
-                    setTimeout(sendIRKey(remoteDevice, 'KEY_0'), extraTimeout);
+                    setTimeout("sendIRKey('"+remoteDevice+"', 'KEY_0')", extraTimeout);
                     extraTimeout += sendingTimeout;
                     break;
             }
             for (var i=0; i < channel.length; i++) {
-                setTimeout(sendIRKey(remoteDevice, 'KEY_' + channel.charAt(i), extraTimeout + i * sendingTimeout));
+                setTimeout("sendIRKey('"+remoteDevice+"', 'KEY_" + channel.charAt(i)+"')", extraTimeout + i * sendingTimeout);
             }
 
             return false;
