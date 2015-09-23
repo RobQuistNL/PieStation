@@ -10,9 +10,21 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var lastLedKey = "unknown";
 var wit = require('node-wit');
-var microtime = require('microtime');
-var lastclap = microtime.now();
+var lastclap = Date.now();
+var isPi = false;
+var fs = require('fs');
+var _ = require('underscore');
+var isRecording = false;
 WIT_ACCESS_TOKEN = '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O';
+
+fs.readFile('/etc/os-release', 'utf8', function (err,data) {
+    if (err) {
+        return console.log(err);
+    }
+    if (data.indexOf('raspbian') > -1) {
+        isPi = true;
+    }
+});
 
 app.use(express.static(__dirname + '/public'));
 
@@ -111,28 +123,80 @@ lirc.initialize();
 http.listen(port, function(){
     console.log('listening on *:'+port);
 });
-/*
-var recording = wit.captureSpeechIntentFromMic(WIT_ACCESS_TOKEN, {verbose: true}, function (err, res) {
-    console.log("Response from Wit for microphone audio stream: ");
-    if (err) console.log("Error: ", err);
-    console.log(JSON.stringify(res, null, " "));
-});
-// The microphone audio stream will automatically attempt to stop when it encounters silence.
-// You can stop the recording manually by calling `stop`
-// Ex: Stop recording after five seconds
-setTimeout(function () {
-    recording.stop();
-}, 5000);
-*/
+
+function listenToSpeech() {
+    isRecording = true;
+    var recording = wit.captureSpeechIntentFromMic(WIT_ACCESS_TOKEN, {verbose: true}, function (err, res) {
+        console.log("Response from Wit for microphone audio stream: ");
+        if (err) {
+            console.log("Error: ", err);
+        }
+        parseSpeech(res);
+        isRecording = false;
+    });
+    // The microphone audio stream will automatically attempt to stop when it encounters silence.
+    // You can stop the recording manually by calling `stop`
+    // Ex: Stop recording after five seconds
+    setTimeout(function () {
+        recording.stop();
+    }, 3000);
+}
+
+function parseSpeech(res) {
+    if (res.outcomes[0] == undefined) {
+        return;
+    }
+    _.each(res.outcomes[0].entities, function(entity) {
+        entity = entity[0];
+        console.log(entity._entity, entity.value);
+        switch (res.outcomes[0].intent) {
+            case 'TV_Control':
+                switch (entity._entity) {
+                    case 'on_off':
+                        switch (entity.value) {
+                            case 'on':
+                                console.log('Enable TV');
+                                break;
+                            case 'off':
+                                console.log('Disable TV');
+                                break;
+                        }
+                        break;
+                }
+                break;
+            case 'Lights_control':
+                switch (entity._entity) {
+                    case 'on_off':
+                        switch (entity.value) {
+                            case 'on':
+                                console.log('Enable Lights');
+                                break;
+                            case 'off':
+                                console.log('Disable Lights');
+                                break;
+                        }
+                        break;
+                }
+                break;
+        }
+    });
+
+}
+
+exec('export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;');
 function checkMic() {
-    exec('rec -n stat trim 0 .2 2>&1 | awk \'/^Maximum amplitude/ { print $3 }\'', function(error, stdout, stderr) {
+    var exportString = '';
+    if (isPi) {
+        exportString = 'export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;';
+    }
+    exec(exportString + 'rec -n stat trim 0 .2 2>&1 | awk \'/^Maximum amplitude/ { print $3 }\'', function(error, stdout) {
         if (stdout >= 0.9) {
-            console.log('Clap!');
-            if (microtime.now() - lastclap <= 700000) {
+            var diff = Date.now() - lastclap;
+            if (diff <= 1000 && diff >= 200 && isRecording == false) {
                 console.log('CLAPCLAP!!');
+                listenToSpeech();
             }
-            lastclap = microtime.now();
-            console.log(lastclap);
+            lastclap = Date.now();
         }
         checkMic();
     });
@@ -148,4 +212,3 @@ process.on('uncaughtException', function(err) {
         throw err;
     }
 });
-
