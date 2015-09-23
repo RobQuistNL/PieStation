@@ -6,9 +6,11 @@
   "dependencies": {
     "cron": "~1.0.4",
     "express": "^4.10.2",
+    "microtime": "^2.0.0",
+    "node-wit": "https://github.com/wit-ai/node-wit.git#a61a384b00db1e06305e794eacf680a58dfdaf62",
     "prettycron": "^0.10.0",
     "socket.io": "^1.3.5",
-    "speakable": "0.3.0"
+    "web-audio-api": "^0.2.1"
   },
   "devDependencies": {},
   "scripts": {

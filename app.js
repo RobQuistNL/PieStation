@@ -9,7 +9,10 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var lastLedKey = "unknown";
-var Speakable = require('speakable');
+var wit = require('node-wit');
+var microtime = require('microtime');
+var lastclap = microtime.now();
+WIT_ACCESS_TOKEN = '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O';
 
 app.use(express.static(__dirname + '/public'));
 
@@ -108,34 +111,34 @@ lirc.initialize();
 http.listen(port, function(){
     console.log('listening on *:'+port);
 });
-
-var speakable = new Speakable({key: 'AIzaSyBAXA_DFooCJZGBurWDwkdZv1vnB680rMI'}, {lang: 'nl-NL'});
-speakable.cmd = 'sox';
-speakable.on('speechStart', function() {
-    console.log('onSpeechStart');
+/*
+var recording = wit.captureSpeechIntentFromMic(WIT_ACCESS_TOKEN, {verbose: true}, function (err, res) {
+    console.log("Response from Wit for microphone audio stream: ");
+    if (err) console.log("Error: ", err);
+    console.log(JSON.stringify(res, null, " "));
 });
+// The microphone audio stream will automatically attempt to stop when it encounters silence.
+// You can stop the recording manually by calling `stop`
+// Ex: Stop recording after five seconds
+setTimeout(function () {
+    recording.stop();
+}, 5000);
+*/
+function checkMic() {
+    exec('rec -n stat trim 0 .2 2>&1 | awk \'/^Maximum amplitude/ { print $3 }\'', function(error, stdout, stderr) {
+        if (stdout >= 0.9) {
+            console.log('Clap!');
+            if (microtime.now() - lastclap <= 700000) {
+                console.log('CLAPCLAP!!');
+            }
+            lastclap = microtime.now();
+            console.log(lastclap);
+        }
+        checkMic();
+    });
+}
 
-speakable.on('speechStop', function() {
-    console.log('onSpeechStop');
-});
-
-speakable.on('speechReady', function() {
-    console.log('onSpeechReady');
-});
-
-speakable.on('error', function(err) {
-    console.log('onError:');
-    console.log(err);
-    speakable.recordVoice();
-});
-
-speakable.on('speechResult', function(recognizedWords) {
-    console.log('onSpeechResult:')
-    console.log(recognizedWords);
-    speakable.recordVoice();
-});
-
-speakable.recordVoice();
+checkMic();
 
 process.on('uncaughtException', function(err) {
     if(err.errno === 'EADDRINUSE') {
