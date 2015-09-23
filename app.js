@@ -9,6 +9,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var lastLedKey = "unknown";
+var Speakable = require('speakable');
 
 app.use(express.static(__dirname + '/public'));
 
@@ -108,6 +109,34 @@ http.listen(port, function(){
     console.log('listening on *:'+port);
 });
 
+var speakable = new Speakable({key: 'AIzaSyBAXA_DFooCJZGBurWDwkdZv1vnB680rMI'}, {lang: 'nl-NL'});
+speakable.cmd = 'sox';
+speakable.on('speechStart', function() {
+    console.log('onSpeechStart');
+});
+
+speakable.on('speechStop', function() {
+    console.log('onSpeechStop');
+});
+
+speakable.on('speechReady', function() {
+    console.log('onSpeechReady');
+});
+
+speakable.on('error', function(err) {
+    console.log('onError:');
+    console.log(err);
+    speakable.recordVoice();
+});
+
+speakable.on('speechResult', function(recognizedWords) {
+    console.log('onSpeechResult:')
+    console.log(recognizedWords);
+    speakable.recordVoice();
+});
+
+speakable.recordVoice();
+
 process.on('uncaughtException', function(err) {
     if(err.errno === 'EADDRINUSE') {
         console.log('Listening address on port ' + port + ' is in use or unavailable.');
@@ -116,3 +145,4 @@ process.on('uncaughtException', function(err) {
         throw err;
     }
 });
+
