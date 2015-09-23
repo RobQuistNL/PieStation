@@ -48,21 +48,31 @@ io.on('connection', function(socket){
 app.get('/send/kaku/:letter/:code/:onoff', function(req, res) {
     // KlikAanKlikUit remote power thingies
 
+
+
     var letter = req.param("letter");
     var code = req.param("code");
     var onoff = req.param("onoff");
+    KaKu (letter, code, onoff, res);
+});
 
+function KaKu(letter, code, onoff, res) {
     console.log('Got KAKU: ' + letter + ' ' + code + ' ' + onoff);
     var command="sudo /var/wiringPi/examples/lights/kaku " + letter + " " + code + " " + onoff;
 
     exec(command, function(error, stdout, stderr){
         if(error) {
-            res.send("Error sending command ("+error+stdout+stderr+")");
+            var msg = 'ERROR:' + error;
         } else {
-            res.send("Sent command!" + stdout + stderr);
+            var msg = "Sent command!" + stdout + stderr;
+        }
+        if (res != undefined) {
+            res.send(msg);
+        } else {
+            console.log(msg);
         }
     });
-});
+}
 
 app.get('/send/:device/:key', function(req, res) {
 
@@ -155,10 +165,10 @@ function parseSpeech(res) {
                     case 'on_off':
                         switch (entity.value) {
                             case 'on':
-                                console.log('Enable TV');
+                                KaKu('M', '20', 'on')
                                 break;
                             case 'off':
-                                console.log('Disable TV');
+                                KaKu('M', '20', 'off')
                                 break;
                         }
                         break;
@@ -169,10 +179,10 @@ function parseSpeech(res) {
                     case 'on_off':
                         switch (entity.value) {
                             case 'on':
-                                console.log('Enable Lights');
+                                KaKu('M', '10', 'on')
                                 break;
                             case 'off':
-                                console.log('Disable Lights');
+                                KaKu('M', '10', 'off')
                                 break;
                         }
                         break;
