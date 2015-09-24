@@ -8,6 +8,8 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var lastLedKey = "unknown";
 var wit = require('node-wit');
+var lastclap = Date.now();
+var isPi = true;
 var fs = require('fs');
 var _ = require('underscore');
 var md5 = require('md5');
@@ -35,7 +37,9 @@ fs.readFile('/etc/os-release', 'utf8', function (err,data) {
     }
     if (data.indexOf('raspbian') > -1) {
         isPi = true;
+console.log('pi found');
     }
+console.log(isPi, "IsPi");
 });
 
 app.use(express.static(__dirname + '/public'));
@@ -167,9 +171,11 @@ function listenToSpeech() {
     isRecording = true;
     var recording = wit.captureSpeechIntentFromMic(WIT_ACCESS_TOKEN, {verbose: true}, function (err, res) {
         console.log("Response from Wit for microphone audio stream: ");
-        if (err) {
+       	console.log(err, res);
+	if (err) {
             console.log("Error: ", err);
         }
+	console.log(res);
         parseSpeech(res);
         isRecording = false;
     });
@@ -274,10 +280,12 @@ function checkMicOld() {
     if (isPi) {
         exportString = 'export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;';
     }
-    exec(exportString + 'rec -n stat trim 0 .2 2>&1 | awk \'/^Maximum amplitude/ { print $3 }\'', function(error, stdout) {
+    exec(exportString + 'rec -n stat trim 0 .5 2>&1 | awk \'/^Maximum amplitude/ { print $3 }\'', function(error, stdout) {
+    //exec(exportString + 'rec -n stat trim 0 .5 2>&1 ', function(error, stdout) {
+	//console.log(stdout);
         if (stdout >= 0.9) {
             var diff = Date.now() - lastclap;
-            if (diff <= 1000 && diff >= 200 && isRecording == false) {
+            if (diff <= 2000 && diff >= 200 && isRecording == false) {
                 console.log('CLAPCLAP!!');
                 listenToSpeech();
             }
