@@ -1,0 +1,3 @@
+[submodule "dist/sndpeek-src"]
+	path = dist/sndpeek-src
+	url = git@github.com:RobQuistNL/sndpeek.git
