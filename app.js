@@ -1,6 +1,4 @@
-//Listening port
-var port = 80;
-
+//Requires
 var lirc = require("./modules/lirc.js");
 var exec = require('child_process').exec;
 var alarms = require("./modules/alarms.js").initialize();
@@ -10,12 +8,26 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var lastLedKey = "unknown";
 var wit = require('node-wit');
-var lastclap = Date.now();
-var isPi = false;
 var fs = require('fs');
 var _ = require('underscore');
+var md5 = require('md5');
+spawn = require('child_process').spawn;
+var StreamSplitter = require("stream-splitter");
+
+//Needed variables
+var lastclap = Date.now();
+var isPi = false;
 var isRecording = false;
+
+WHISTLE_MAX_DIFF = 2;
+WHISTLE_MIN = 15;
+WHISTLE_MAX = 50;
+
+//Config
+WEBSERVER_PORT = 80; //Listening port
 WIT_ACCESS_TOKEN = '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O';
+
+
 
 fs.readFile('/etc/os-release', 'utf8', function (err,data) {
     if (err) {
@@ -47,14 +59,27 @@ io.on('connection', function(socket){
 
 app.get('/send/kaku/:letter/:code/:onoff', function(req, res) {
     // KlikAanKlikUit remote power thingies
-
-
-
     var letter = req.param("letter");
     var code = req.param("code");
     var onoff = req.param("onoff");
     KaKu (letter, code, onoff, res);
 });
+
+function textToSpeech(text) {
+    text = encodeURIComponent(text);
+
+    var filename = md5(text);
+
+    fs.exists('./speech/'+filename+'.mp3', function (exists) {
+        if (exists) {
+            exec("ffplay -i ./speech/"+filename+".mp3 -v quiet -nodisp -autoexit");
+        } else {
+            exec("curl 'http://translate.google.com/translate_tts?tl=nlie&=UTF-8&q="+text+"&tl=en&client=t' -H " +
+                "'Referer: http://translate.google.com/' -H 'User-Agent: stagefright/1.2 (Linux;Android 5.0)' " +
+                "> ./speech/"+filename+".mp3; ffplay -i ./speech/"+filename+".mp3 -v quiet -nodisp -autoexit");
+        }
+    });
+}
 
 function KaKu(letter, code, onoff, res) {
     console.log('Got KAKU: ' + letter + ' ' + code + ' ' + onoff);
@@ -73,6 +98,10 @@ function KaKu(letter, code, onoff, res) {
         }
     });
 }
+
+app.get('/tts/:string', function(req, res) {
+    textToSpeech(req.param("string"));
+});
 
 app.get('/send/:device/:key', function(req, res) {
 
@@ -130,8 +159,8 @@ app.get('/get/devices', function(req, res) {
 
 lirc.initialize();
 
-http.listen(port, function(){
-    console.log('listening on *:'+port);
+http.listen(WEBSERVER_PORT, function(){
+    console.log('listening on *:'+WEBSERVER_PORT);
 });
 
 function listenToSpeech() {
@@ -193,8 +222,54 @@ function parseSpeech(res) {
 
 }
 
-exec('export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;');
 function checkMic() {
+
+
+}
+
+whistleListen = spawn('./dist/sndpeek', ['--nodisplay','--print','--rolloff-only']);
+var splitter = whistleListen.stdout.pipe(StreamSplitter("\n"));
+splitter.encoding = "utf8";
+var lastWhistle = Date.now();
+var lastTone = 0;
+var currentTone = 0;
+splitter.on("token", function(token) {
+    //console.log("A line of input:", token);
+    token = token.split(' ');
+    var min = parseFloat(token[0]);
+    var max = parseFloat(token[1]);
+    var diff = max - min;
+    if (diff <= WHISTLE_MAX_DIFF/2 && diff >= -WHISTLE_MAX_DIFF/2 && min >= WHISTLE_MIN && max <= WHISTLE_MAX) {
+        //console.log('Whistle detected ', min, max);
+        currentTone = (min+max)/2;
+        var timeSpent = Date.now() - lastWhistle;
+
+        if (timeSpent <= 500) {
+            if (lastTone >= 25 && lastTone <= 35
+                && currentTone >= 35 && currentTone <= 45) {
+                KaKu('M', '10', 'on')
+                console.log('UP!');
+            }
+
+            if (currentTone >= 25 && currentTone <= 35
+                && lastTone >= 35 && lastTone <= 45) {
+                KaKu('M', '10', 'off')
+                console.log('DOWN!');
+            }
+        }
+        console.log('NOW['+currentTone+']LAST['+lastTone+']DIFF['+timeSpent+']');
+
+        lastWhistle = Date.now();
+        lastTone = (min+max)/2;
+    }
+});
+
+whistleListen.on('exit', function (code) {
+    console.log('child process exited with code ' + code);
+});
+
+exec('export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;');
+function checkMicOld() {
     var exportString = '';
     if (isPi) {
         exportString = 'export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;';
@@ -216,7 +291,7 @@ checkMic();
 
 process.on('uncaughtException', function(err) {
     if(err.errno === 'EADDRINUSE') {
-        console.log('Listening address on port ' + port + ' is in use or unavailable.');
+        console.log('Listening address on port ' + WEBSERVER_PORT + ' is in use or unavailable.');
         process.exit(1);
     } else {
         throw err;

@@ -6,10 +6,12 @@
   "dependencies": {
     "cron": "~1.0.4",
     "express": "^4.10.2",
+    "md5": "^2.0.0",
     "microtime": "^2.0.0",
     "node-wit": "git+http://github.com/wit-ai/node-wit.git#a61a384b00db1e06305e794eacf680a58dfdaf62",
     "prettycron": "^0.10.0",
     "socket.io": "^1.3.5",
+    "stream-splitter": "^0.3.2",
     "underscore": "^1.8.3"
   },
   "devDependencies": {},
