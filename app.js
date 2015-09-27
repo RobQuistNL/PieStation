@@ -321,3 +321,26 @@ process.on('uncaughtException', function(err) {
         throw err;
     }
 });
+
+
+var mic = require('microphone');
+
+mic.startCapture();
+
+mic.audioStream.on('data', function(data) {
+    process.stdout.write(data);
+});
+
+var detectPitch = require('detect-pitch')
+
+var n = 1024
+var ω = 2.0 * Math.PI / n
+
+//Initialize signal
+var signal = new Float32Array(n)
+for(var i=0; i<n; ++i) {
+    signal[i] = Math.sin(100 * i * ω)
+}
+
+console.log(Math.round(n / detectPitch(signal)))
+ 
