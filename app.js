@@ -246,24 +246,40 @@ splitter.on("token", function(token) {
     var max = parseFloat(token[1]);
     var diff = max - min;
     if (diff <= WHISTLE_MAX_DIFF/2 && diff >= -WHISTLE_MAX_DIFF/2 && min >= WHISTLE_MIN && max <= WHISTLE_MAX) {
-        //console.log('Whistle detected ', min, max);
+        console.log('Whistle detected ', min, max);
         currentTone = (min+max)/2;
         var timeSpent = Date.now() - lastWhistle;
 
         if (timeSpent <= 500) {
             if (lastTone >= 25 && lastTone <= 35
                 && currentTone >= 35 && currentTone <= 45) {
-                KaKu('M', '10', 'on')
+                //KaKu('M', '10', 'on');
+                exec('wget http://thuis.dukesoft.nl/send/kaku/M/10/on');
                 console.log('UP!');
             }
 
             if (currentTone >= 25 && currentTone <= 35
                 && lastTone >= 35 && lastTone <= 45) {
-                KaKu('M', '10', 'off')
+                //KaKu('M', '10', 'off');
+                exec('wget http://thuis.dukesoft.nl/send/kaku/M/10/off');
                 console.log('DOWN!');
             }
+
+            if (currentTone >=19 && currentTone <= 21
+                && lastTone >= 19 && lastTone <= 21) {
+                //KaKu('M', '10', 'off');
+                exec('wget http://thuis.dukesoft.nl/send/kaku/M/20/off');
+                console.log('OFF TV!');
+            }
+
+            if (currentTone >= 43 && currentTone <= 45
+                && lastTone >= 43 && lastTone <= 45) {
+                //KaKu('M', '10', 'off');
+                exec('wget http://thuis.dukesoft.nl/send/kaku/M/20/on');
+                console.log('ON TV!');
+            }
         }
-        console.log('NOW['+currentTone+']LAST['+lastTone+']DIFF['+timeSpent+']');
+        //console.log('NOW['+currentTone+']LAST['+lastTone+']DIFF['+timeSpent+']');
 
         lastWhistle = Date.now();
         lastTone = (min+max)/2;
