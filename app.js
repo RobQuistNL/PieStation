@@ -7,6 +7,8 @@ var app = express();
 var fs = require('fs');
 var lpcm16 = require('node-record-lpcm16');
 
+var request = require('request');
+
 var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 var credentials = {key: privateKey, cert: certificate};
@@ -61,15 +63,22 @@ function textToSpeech(text, lang) {
 
     var filename = md5(text);
     var playcmd = 'omxplayer'; //ffplay -i
+    var playArgs = ''; //' -v quiet -nodisp -autoexit';
     fs.exists('./speech/'+filename+'.mp3', function (exists) {
         if (exists) {
-            exec(playcmd+" ./speech/"+filename+".mp3 -v quiet -nodisp -autoexit");
+            exec(playcmd+" ./speech/"+filename+".mp3" + playArgs);
         } else {
             exec("curl 'http://translate.google.com/translate_tts?&ie=UTF-8&q="+text+"&tl="+lang+"&client=t' -H " +
                 "'Referer: http://translate.google.com/' -H 'User-Agent: stagefright/1.2 (Linux;Android 5.0)' " +
-                "> ./speech/"+filename+".mp3; "+playcmd+" ./speech/"+filename+".mp3 -v quiet -nodisp -autoexit");
+                "> ./speech/"+filename+".mp3; "+playcmd+" ./speech/"+filename+".mp3" + playArgs);
         }
     });
+}
+
+function playSound(file) {
+    var playcmd = 'omxplayer'; //ffplay -i
+    var playArgs = ''; //' -v quiet -nodisp -autoexit';
+    exec(playcmd+" ./speech/"+file+".mp3" + playArgs);
 }
 
 function KaKu(letter, code, onoff, res) {
@@ -165,12 +174,12 @@ app.get('/start-listening', function(req, res) {
     return res.send('Listening!');
 });
 
-
 function listenToSpeech(res) {
+    console.log('Listening...');
     sendLirc('sonytv', 'KEY_MUTE');
-    textToSpeech("Yes?", 'en');
+    playSound('./dist/homer-hello.ogg');
     isRecording = true;
-    var recording = lpcm16.start({
+    lpcm16.start({
             verbose: true,
             recordProgram: 'arecord'
         }).pipe(request.post({
@@ -180,21 +189,19 @@ function listenToSpeech(res) {
                 'Authorization' : 'Bearer ' + WIT_ACCESS_TOKEN,
                 'Content-Type'  : 'audio/wav'
             }
-    }, function(res) {
+    }, function(err,httpResponse,body) {
         isRecording = false;
-        parseSpeech(res);
+        parseSpeech(JSON.parse(body));
     }));
-    // The microphone audio stream will automatically attempt to stop when it encounters silence.
-    // You can stop the recording manually by calling `stop`
-    // Ex: Stop recording after five seconds
     setTimeout(function () {
-        recording.stop();
+        lpcm16.stop();
         sendLirc('sonytv', 'KEY_MUTE');
-    }, 3000);
+    }, 4000);
 }
 
 function parseSpeech(res) {
     if (res.outcomes[0] == undefined) {
+        console.log('No outcomes.');
         return;
     }
     _.each(res.outcomes[0].entities, function(entity) {
