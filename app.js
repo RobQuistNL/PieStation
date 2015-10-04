@@ -8,28 +8,19 @@ var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var lastLedKey = "unknown";
 var wit = require('node-wit');
-var lastclap = Date.now();
 var isPi = true;
 var fs = require('fs');
 var _ = require('underscore');
 var md5 = require('md5');
 spawn = require('child_process').spawn;
-var StreamSplitter = require("stream-splitter");
 
 //Needed variables
-var lastclap = Date.now();
 var isPi = false;
 var isRecording = false;
-
-WHISTLE_MAX_DIFF = 2;
-WHISTLE_MIN = 15;
-WHISTLE_MAX = 50;
 
 //Config
 WEBSERVER_PORT = 80; //Listening port
 WIT_ACCESS_TOKEN = '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O';
-
-
 
 fs.readFile('/etc/os-release', 'utf8', function (err,data) {
     if (err) {
@@ -76,11 +67,11 @@ function textToSpeech(text) {
 
     fs.exists('./speech/'+filename+'.mp3', function (exists) {
         if (exists) {
-            exec("ffplay -i ./speech/"+filename+".mp3 -v quiet -nodisp -autoexit");
+            exec("omxplayer ./speech/"+filename+".mp3");
         } else {
             exec("curl 'http://translate.google.com/translate_tts?tl=nlie&=UTF-8&q="+text+"&tl=en&client=t' -H " +
                 "'Referer: http://translate.google.com/' -H 'User-Agent: stagefright/1.2 (Linux;Android 5.0)' " +
-                "> ./speech/"+filename+".mp3; ffplay -i ./speech/"+filename+".mp3 -v quiet -nodisp -autoexit");
+                "> ./speech/"+filename+".mp3; omxplayer ./speech/"+filename+".mp3");
         }
     });
 }
@@ -228,91 +219,6 @@ function parseSpeech(res) {
 
 }
 
-function checkMic() {
-
-
-}
-
-whistleListen = spawn('./dist/sndpeek', ['--nodisplay','--print','--rolloff-only']);
-var splitter = whistleListen.stdout.pipe(StreamSplitter("\n"));
-splitter.encoding = "utf8";
-var lastWhistle = Date.now();
-var lastTone = 0;
-var currentTone = 0;
-splitter.on("token", function(token) {
-    //console.log("A line of input:", token);
-    token = token.split(' ');
-    var min = parseFloat(token[0]);
-    var max = parseFloat(token[1]);
-    var diff = max - min;
-    if (diff <= WHISTLE_MAX_DIFF/2 && diff >= -WHISTLE_MAX_DIFF/2 && min >= WHISTLE_MIN && max <= WHISTLE_MAX) {
-        console.log('Whistle detected ', min, max);
-        currentTone = (min+max)/2;
-        var timeSpent = Date.now() - lastWhistle;
-
-        if (timeSpent <= 500) {
-            if (lastTone >= 25 && lastTone <= 35
-                && currentTone >= 35 && currentTone <= 45) {
-                //KaKu('M', '10', 'on');
-                exec('wget http://thuis.dukesoft.nl/send/kaku/M/10/on');
-                console.log('UP!');
-            }
-
-            if (currentTone >= 25 && currentTone <= 35
-                && lastTone >= 35 && lastTone <= 45) {
-                //KaKu('M', '10', 'off');
-                exec('wget http://thuis.dukesoft.nl/send/kaku/M/10/off');
-                console.log('DOWN!');
-            }
-
-            if (currentTone >=19 && currentTone <= 21
-                && lastTone >= 19 && lastTone <= 21) {
-                //KaKu('M', '10', 'off');
-                exec('wget http://thuis.dukesoft.nl/send/kaku/M/20/off');
-                console.log('OFF TV!');
-            }
-
-            if (currentTone >= 43 && currentTone <= 45
-                && lastTone >= 43 && lastTone <= 45) {
-                //KaKu('M', '10', 'off');
-                exec('wget http://thuis.dukesoft.nl/send/kaku/M/20/on');
-                console.log('ON TV!');
-            }
-        }
-        //console.log('NOW['+currentTone+']LAST['+lastTone+']DIFF['+timeSpent+']');
-
-        lastWhistle = Date.now();
-        lastTone = (min+max)/2;
-    }
-});
-
-whistleListen.on('exit', function (code) {
-    console.log('child process exited with code ' + code);
-});
-
-exec('export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;');
-function checkMicOld() {
-    var exportString = '';
-    if (isPi) {
-        exportString = 'export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;';
-    }
-    exec(exportString + 'rec -n stat trim 0 .5 2>&1 | awk \'/^Maximum amplitude/ { print $3 }\'', function(error, stdout) {
-    //exec(exportString + 'rec -n stat trim 0 .5 2>&1 ', function(error, stdout) {
-	//console.log(stdout);
-        if (stdout >= 0.9) {
-            var diff = Date.now() - lastclap;
-            if (diff <= 2000 && diff >= 200 && isRecording == false) {
-                console.log('CLAPCLAP!!');
-                listenToSpeech();
-            }
-            lastclap = Date.now();
-        }
-        checkMic();
-    });
-}
-
-checkMic();
-
 process.on('uncaughtException', function(err) {
     if(err.errno === 'EADDRINUSE') {
         console.log('Listening address on port ' + WEBSERVER_PORT + ' is in use or unavailable.');
@@ -322,25 +228,3 @@ process.on('uncaughtException', function(err) {
     }
 });
 
-
-var mic = require('microphone');
-
-mic.startCapture();
-
-mic.audioStream.on('data', function(data) {
-    process.stdout.write(data);
-});
-
-var detectPitch = require('detect-pitch')
-
-var n = 1024
-var ω = 2.0 * Math.PI / n
-
-//Initialize signal
-var signal = new Float32Array(n)
-for(var i=0; i<n; ++i) {
-    signal[i] = Math.sin(100 * i * ω)
-}
-
-console.log(Math.round(n / detectPitch(signal)))
- 
