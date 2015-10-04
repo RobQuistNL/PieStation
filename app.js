@@ -5,6 +5,7 @@ var alarms = require("./modules/alarms.js").initialize();
 var express = require('express');
 var app = express();
 var fs = require('fs');
+var lpcm16 = require('node-record-lpcm16');
 
 var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
@@ -15,9 +16,6 @@ var https = require('https').createServer(credentials, app);
 
 var io = require('socket.io')(http);
 var lastLedKey = "unknown";
-var wit = require('node-wit');
-
-
 var _ = require('underscore');
 var md5 = require('md5');
 spawn = require('child_process').spawn;
@@ -172,13 +170,20 @@ function listenToSpeech(res) {
     sendLirc('sonytv', 'KEY_MUTE');
     textToSpeech("Yes?", 'en');
     isRecording = true;
-    var recording = wit.captureSpeechIntentFromMic(WIT_ACCESS_TOKEN, {verbose: true}, function (err, res) {
-        if (err) {
-                console.log("Error: ", err);
+    var recording = lpcm16.start({
+            verbose: true,
+            recordProgram: 'arecord'
+        }).pipe(request.post({
+            'url'     : 'https://api.wit.ai/speech?client=chromium&lang=en-us&output=json',
+            'headers' : {
+                'Accept'        : 'application/vnd.wit.20160202+json',
+                'Authorization' : 'Bearer ' + WIT_ACCESS_TOKEN,
+                'Content-Type'  : 'audio/wav'
             }
-        parseSpeech(res);
+    }, function(res) {
         isRecording = false;
-    });
+        parseSpeech(res);
+    }));
     // The microphone audio stream will automatically attempt to stop when it encounters silence.
     // You can stop the recording manually by calling `stop`
     // Ex: Stop recording after five seconds
