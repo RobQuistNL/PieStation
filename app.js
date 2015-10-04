@@ -4,35 +4,30 @@ var exec = require('child_process').exec;
 var alarms = require("./modules/alarms.js").initialize();
 var express = require('express');
 var app = express();
+var fs = require('fs');
+
+var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
+var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
+var credentials = {key: privateKey, cert: certificate};
+
 var http = require('http').Server(app);
+var https = require('https').createServer(credentials, app);
+
 var io = require('socket.io')(http);
 var lastLedKey = "unknown";
 var wit = require('node-wit');
-var isPi = true;
-var fs = require('fs');
+
+
 var _ = require('underscore');
 var md5 = require('md5');
 spawn = require('child_process').spawn;
 
-//Needed variables
 var isPi = false;
-var isRecording = false;
 
 //Config
 WEBSERVER_PORT = 80; //Listening port
 WIT_ACCESS_TOKEN = '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O';
-
-fs.readFile('/etc/os-release', 'utf8', function (err,data) {
-    if (err) {
-        return console.log(err);
-    }
-    if (data.indexOf('raspbian') > -1) {
-        isPi = true;
-console.log('pi found');
-    }
-console.log(isPi, "IsPi");
-});
-
+exec('export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;');
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function(socket){
@@ -60,18 +55,21 @@ app.get('/send/kaku/:letter/:code/:onoff', function(req, res) {
     KaKu (letter, code, onoff, res);
 });
 
-function textToSpeech(text) {
+function textToSpeech(text, lang) {
+    if (lang == undefined) {
+        lang = 'en';
+    }
     text = encodeURIComponent(text);
 
     var filename = md5(text);
-
+    var playcmd = 'omxplayer'; //ffplay -i
     fs.exists('./speech/'+filename+'.mp3', function (exists) {
         if (exists) {
-            exec("omxplayer ./speech/"+filename+".mp3");
+            exec(playcmd+" ./speech/"+filename+".mp3 -v quiet -nodisp -autoexit");
         } else {
-            exec("curl 'http://translate.google.com/translate_tts?tl=nlie&=UTF-8&q="+text+"&tl=en&client=t' -H " +
+            exec("curl 'http://translate.google.com/translate_tts?&ie=UTF-8&q="+text+"&tl="+lang+"&client=t' -H " +
                 "'Referer: http://translate.google.com/' -H 'User-Agent: stagefright/1.2 (Linux;Android 5.0)' " +
-                "> ./speech/"+filename+".mp3; omxplayer ./speech/"+filename+".mp3");
+                "> ./speech/"+filename+".mp3; "+playcmd+" ./speech/"+filename+".mp3 -v quiet -nodisp -autoexit");
         }
     });
 }
@@ -94,12 +92,12 @@ function KaKu(letter, code, onoff, res) {
     });
 }
 
-app.get('/tts/:string', function(req, res) {
-    textToSpeech(req.param("string"));
+app.get('/tts/:string/:lang', function(req, res) {
+    textToSpeech(req.param("string"), req.param("lang"));
+    return res.send('Speaking');
 });
 
 app.get('/send/:device/:key', function(req, res) {
-
     var deviceName = req.param("device");
     var key = req.param("key").toUpperCase();
 
@@ -140,10 +138,12 @@ function sendLirc(deviceName, key, res) {
     // send command to irsend
     var command = "irsend SEND_ONCE "+deviceName+" "+key;
     lirc.exec(command, function(error, stdout, stderr){
-        if(error) {
-            res.send("Error sending command");
-        } else {
-            res.send("Dun send");
+        if (res != undefined) {
+            if(error) {
+                res.send("Error sending command");
+            } else {
+                res.send("Dun send");
+            }
         }
     });
 }
@@ -158,15 +158,24 @@ http.listen(WEBSERVER_PORT, function(){
     console.log('listening on *:'+WEBSERVER_PORT);
 });
 
-function listenToSpeech() {
+https.listen(443, function(){
+    console.log('listening on *:443');
+});
+
+app.get('/start-listening', function(req, res) {
+    listenToSpeech(res);
+    return res.send('Listening!');
+});
+
+
+function listenToSpeech(res) {
+    sendLirc('sonytv', 'KEY_MUTE');
+    textToSpeech("Yes?", 'en');
     isRecording = true;
     var recording = wit.captureSpeechIntentFromMic(WIT_ACCESS_TOKEN, {verbose: true}, function (err, res) {
-        console.log("Response from Wit for microphone audio stream: ");
-       	console.log(err, res);
-	if (err) {
-            console.log("Error: ", err);
-        }
-	console.log(res);
+        if (err) {
+                console.log("Error: ", err);
+            }
         parseSpeech(res);
         isRecording = false;
     });
@@ -175,6 +184,7 @@ function listenToSpeech() {
     // Ex: Stop recording after five seconds
     setTimeout(function () {
         recording.stop();
+        sendLirc('sonytv', 'KEY_MUTE');
     }, 3000);
 }
 
@@ -184,7 +194,10 @@ function parseSpeech(res) {
     }
     _.each(res.outcomes[0].entities, function(entity) {
         entity = entity[0];
-        console.log(entity._entity, entity.value);
+        if (res.outcomes[0].confidence < .50) {
+            return
+        }
+        console.log(res.outcomes[0].intent, entity._entity, entity.value, res.outcomes[0].confidence);
         switch (res.outcomes[0].intent) {
             case 'TV_Control':
                 switch (entity._entity) {
