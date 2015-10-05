@@ -1,5 +1,6 @@
 //Requires
 var lirc = require("./modules/lirc.js");
+var sonybravia = require("./modules/sonybravia.js");
 var exec = require('child_process').exec;
 var alarms = require("./modules/alarms.js").initialize();
 var express = require('express');
@@ -24,7 +25,7 @@ var lastLedKey = "unknown";
 var _ = require('underscore');
 var md5 = require('md5');
 spawn = require('child_process').spawn;
-
+var tv_volume = 20;
 var isPi = false;
 
 //Config
@@ -57,6 +58,17 @@ app.get('/send/kaku/:letter/:code/:onoff', function(req, res) {
     var onoff = req.param("onoff");
     KaKu (letter, code, onoff, res);
 });
+
+app.get('/tv/:ircc', function(req, res) {
+    var ircc = req.param("ircc");
+    sonybravia.sendIRCC(ircc);
+});
+
+app.get('/tvvolume/:volume', function(req, res) {
+    var volume = req.param("volume");
+    sonybravia.setVolume(volume);
+});
+
 
 function textToSpeech(text, lang) {
     if (lang == undefined) {
@@ -191,7 +203,7 @@ function stopListening() {
     }
     lpcm16.stop();
     isRecording = true;
-    sendLirc('sonytv', 'KEY_MUTE');
+    sonybravia.setVolume(tv_volume);
 }
 
 function listenToSpeech(res) {
@@ -200,7 +212,7 @@ function listenToSpeech(res) {
     }
     console.log('Listening...');
     isRecording = true;
-    sendLirc('sonytv', 'KEY_MUTE');
+    sonybravia.setVolume(0);
     playSound('./dist/homer-hello.ogg');
     setTimeout(function() {
 

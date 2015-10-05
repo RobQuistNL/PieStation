@@ -1,0 +1,19 @@
+{
+    "msg_id": "7894f4fd-ebea-4692-86b4-794f326e8c9b",
+    "_text": "show me comedy central",
+    "outcomes": [
+        {
+            "_text": "show me comedy central",
+            "confidence": 0.992,
+            "intent": "tv_channel",
+            "entities": {
+                "channel": [
+                    {
+                        "type": "value",
+                        "value": "comedy central"
+                    }
+                ]
+            }
+        }
+    ]
+}

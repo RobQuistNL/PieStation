@@ -1,0 +1,19 @@
+{
+    "msg_id": "1231a17d-ef68-4dfe-b6fd-4dbee7f6e166",
+    "_text": "put the tv on discovery channel",
+    "outcomes": [
+        {
+            "_text": "put the tv on discovery channel",
+            "confidence": 0.999,
+            "intent": "tv_channel",
+            "entities": {
+                "channel": [
+                    {
+                        "type": "value",
+                        "value": "discovery channel"
+                    }
+                ]
+            }
+        }
+    ]
+}

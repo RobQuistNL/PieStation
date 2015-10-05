@@ -1,0 +1,26 @@
+{
+    "msg_id": "abf9f2c0-1a93-4c07-b548-5e903826c174",
+    "_text": "show me channel 6 on the tv",
+    "outcomes": [
+        {
+            "_text": "show me channel 6 on the tv",
+            "confidence": 0.997,
+            "intent": "tv_channel",
+            "entities": {
+                "number": [
+                    {
+                        "value": 6,
+                        "type": "value"
+                    }
+                ],
+                "channel": [
+                    {
+                        "suggested": true,
+                        "value": "the tv",
+                        "type": "value"
+                    }
+                ]
+            }
+        }
+    ]
+}

@@ -1,0 +1,20 @@
+{
+    "msg_id": "7986c37d-e5fc-4531-84b8-2aab22a58081",
+    "_text": "show the computer",
+    "outcomes": [
+        {
+            "_text": "show the computer",
+            "confidence": 0.996,
+            "intent": "tv_channel",
+            "entities": {
+                "channel": [
+                    {
+                        "suggested": true,
+                        "value": "computer",
+                        "type": "value"
+                    }
+                ]
+            }
+        }
+    ]
+}

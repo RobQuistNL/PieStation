@@ -1,0 +1,18 @@
+{
+    "msg_id": "398c115d-33b0-480c-8c5e-9cab596fbe4c",
+    "_text": "show the playstation",
+    "outcomes": [
+        {
+            "_text": "show the playstation",
+            "confidence": 0.995,
+            "intent": "tv_channel",
+            "entities": {
+                "channel": [
+                    {
+                        "value": "playstation"
+                    }
+                ]
+            }
+        }
+    ]
+}

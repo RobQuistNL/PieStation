@@ -23,11 +23,11 @@ function parseSpeech(res) {
         }
     });
 }
-function textToSpeecha(text) {
+function textToSpeech(text) {
     console.log('Speak: ' + text);
 }
 
-function textToSpeech(text, lang) {
+function textToSpeechac(text, lang) {
     if (lang == undefined) {
         lang = 'en';
     }
