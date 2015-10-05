@@ -82,9 +82,9 @@ var voicecommands = {
             }
 
             console.log('Checking for: ' + checkfor);
-
-            var date = 'today';
+            var date = null;
             var today = new Date();
+            var diffDays = 0; //Defaults to today
             if (entities['datetime'] != undefined) {
 
                 if (entities['datetime'][0].type == 'interval') {
@@ -96,7 +96,6 @@ var voicecommands = {
                 }
 
                 console.log('Searching for date:', date);
-                var diffDays = dateDiffInDays(today, date);
                 if (diffDays < 0) {
                     diffDays = 0;
                 }
@@ -128,7 +127,7 @@ var voicecommands = {
             if (diffDays >= 1) { //more days
                 url = api + 'forecast/daily?q='+location+'&units=metric&cnt='+diffDays;
             }
-
+            //console.log('Opening url:'+url, diffDays);
             request(url, function(a, b, body) {
                 var exported = JSON.parse(body);
                 //console.log(exported);

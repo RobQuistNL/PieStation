@@ -1,0 +1,19 @@
+{
+    "msg_id": "2e0d32f7-35c4-4241-a895-99f06e31378a",
+    "_text": "will it rain",
+    "outcomes": [
+        {
+            "_text": "will it rain",
+            "confidence": 0.969,
+            "intent": "weather",
+            "entities": {
+                "weather_types": [
+                    {
+                        "type": "value",
+                        "value": "rain"
+                    }
+                ]
+            }
+        }
+    ]
+}

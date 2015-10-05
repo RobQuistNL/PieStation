@@ -31,6 +31,7 @@ eval(fs.readFileSync('./dist/voicecommands.js')+'');
 //var body = fs.readFileSync('./mockresponses/weather-tonight.json');
 //var body = fs.readFileSync('./mockresponses/rain-amsterdam-today.json');
 //var body = fs.readFileSync('./mockresponses/rain-amsterdam-tomorrow.json');
-var body = fs.readFileSync('./mockresponses/will-it-rain-this-saturday.json');
+//var body = fs.readFileSync('./mockresponses/will-it-rain-this-saturday.json');
+var body = fs.readFileSync('./mockresponses/will-it-rain.json');
 
 parseSpeech(JSON.parse(body));
