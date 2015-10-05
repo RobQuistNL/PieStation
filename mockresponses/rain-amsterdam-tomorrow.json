@@ -1,0 +1,40 @@
+{
+    "msg_id": "5d015ce6-d3f3-49d2-8efb-b545ce63b752",
+    "_text": "will it rain in amsterdam tomorrow",
+    "outcomes": [
+        {
+            "_text": "will it rain in amsterdam tomorrow",
+            "confidence": 0.99,
+            "intent": "weather",
+            "entities": {
+                "weather_types": [
+                    {
+                        "type": "value",
+                        "value": "rain"
+                    }
+                ],
+                "datetime": [
+                    {
+                        "grain": "day",
+                        "value": "2015-10-06T00:00:00.000+02:00",
+                        "type": "value",
+                        "values": [
+                            {
+                                "type": "value",
+                                "value": "2015-10-06T00:00:00.000+02:00",
+                                "grain": "day"
+                            }
+                        ]
+                    }
+                ],
+                "location": [
+                    {
+                        "suggested": true,
+                        "value": "amsterdam",
+                        "type": "value"
+                    }
+                ]
+            }
+        }
+    ]
+}

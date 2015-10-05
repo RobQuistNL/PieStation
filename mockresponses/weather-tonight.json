@@ -1,0 +1,44 @@
+{
+    "msg_id": "2cbb6742-2591-441b-bc6c-f2388170e26a",
+    "_text": "will it rain tonight",
+    "outcomes": [
+        {
+            "_text": "will it rain tonight",
+            "confidence": 0.991,
+            "intent": "weather",
+            "entities": {
+                "weather_types": [
+                    {
+                        "value": "rain"
+                    }
+                ],
+                "datetime": [
+                    {
+                        "to": {
+                            "value": "2015-10-06T00:00:00.000+02:00",
+                            "grain": "hour"
+                        },
+                        "from": {
+                            "value": "2015-10-05T18:00:00.000+02:00",
+                            "grain": "hour"
+                        },
+                        "type": "interval",
+                        "values": [
+                            {
+                                "type": "interval",
+                                "from": {
+                                    "value": "2015-10-05T18:00:00.000+02:00",
+                                    "grain": "hour"
+                                },
+                                "to": {
+                                    "value": "2015-10-06T00:00:00.000+02:00",
+                                    "grain": "hour"
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    ]
+}
