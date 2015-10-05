@@ -1,0 +1,12 @@
+{
+    "msg_id": "edba68ad-ca86-4cd2-930e-fb1763985241",
+    "_text": "what is the weather like",
+    "outcomes": [
+        {
+            "_text": "what is the weather like",
+            "confidence": 0.864,
+            "intent": "weather",
+            "entities": {}
+        }
+    ]
+}

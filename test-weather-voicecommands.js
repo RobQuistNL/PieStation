@@ -23,15 +23,37 @@ function parseSpeech(res) {
         }
     });
 }
-function textToSpeech(text) {
+function textToSpeecha(text) {
     console.log('Speak: ' + text);
 }
+
+function textToSpeech(text, lang) {
+    if (lang == undefined) {
+        lang = 'en';
+    }
+    text = encodeURIComponent(text);
+
+    var filename = 'file';
+    var playcmd = 'omxplayer'; //ffplay -i
+    var playArgs = ''; //' -v quiet -nodisp -autoexit';
+    fs.exists('./speech/'+filename+'.mp3', function (exists) {
+        if (exists) {
+            console.log(playcmd+" ./speech/"+filename+".mp3" + playArgs);
+        } else {
+            console.log("curl 'http://translate.google.com/translate_tts?&ie=UTF-8&q="+text+"&tl="+lang+"&client=t' -H " +
+                "'Referer: http://translate.google.com/' -H 'User-Agent: stagefright/1.2 (Linux;Android 5.0)' " +
+                "> ./speech/"+filename+".mp3; "+playcmd+" ./speech/"+filename+".mp3" + playArgs);
+        }
+    });
+}
+
 eval(fs.readFileSync('./dist/voicecommands.js')+'');
 
 //var body = fs.readFileSync('./mockresponses/weather-tonight.json');
 //var body = fs.readFileSync('./mockresponses/rain-amsterdam-today.json');
 //var body = fs.readFileSync('./mockresponses/rain-amsterdam-tomorrow.json');
 //var body = fs.readFileSync('./mockresponses/will-it-rain-this-saturday.json');
-var body = fs.readFileSync('./mockresponses/will-it-rain.json');
+//var body = fs.readFileSync('./mockresponses/will-it-rain.json');
+var body = fs.readFileSync('./mockresponses/whats-the-weather-like.json');
 
 parseSpeech(JSON.parse(body));

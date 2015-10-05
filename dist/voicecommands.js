@@ -96,6 +96,7 @@ var voicecommands = {
                 }
 
                 console.log('Searching for date:', date);
+                diffDays = dateDiffInDays(today, date);
                 if (diffDays < 0) {
                     diffDays = 0;
                 }
@@ -130,7 +131,7 @@ var voicecommands = {
             //console.log('Opening url:'+url, diffDays);
             request(url, function(a, b, body) {
                 var exported = JSON.parse(body);
-                //console.log(exported);
+                console.log(exported);
                 var description = 'unknown';
                 var clouds = 'unknown';
                 var speed = 'unknown';
@@ -148,8 +149,8 @@ var voicecommands = {
                 } else {
                     description = exported.weather[0].description;
 
-                    tempstring = 'The temperature will be between '+exported.main.temp.temp_min+' and ' +
-                        exported.main.temp.temp_max+' degrees centigrade, avaraging on '+exported.main.temp.temp+' degrees. ';
+                    tempstring = 'The temperature will be between '+Math.round(exported.main.temp_min)+' and ' +
+                        Math.round(exported.main.temp_max)+' degrees centigrade, avaraging on '+Math.round(exported.main.temp)+' degrees. ';
 
                     clouds = exported.clouds.all;
                     speed = exported.wind.speed;
@@ -157,9 +158,11 @@ var voicecommands = {
 
                 switch (checkfor) {
                     case 'general':
-                        textToSpeech(dateAsText + ' in ' + location + ' i would say "'+description+'". ' + tempstring +
-                            ' It will be ' + clouds + ' percent cloudy and wind speeds will be around ' + speed +
-                            ' meters per second.');
+                        textToSpeech(dateAsText + ' in ' + location + ' i would say "'+description+'". ' + tempstring);
+                        setTimeout(function() {
+                            textToSpeech(' It will be ' + clouds + ' percent cloudy and wind speeds will be around ' + speed +
+                                ' meters per second.');
+                        }, 10000);
                         break;
                     case 'temperature':
                         textToSpeech('About the temperature ' + dateAsText + ' in ' + location + ' i would say ' + tempstring);
