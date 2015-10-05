@@ -6,7 +6,9 @@ var express = require('express');
 var app = express();
 var fs = require('fs');
 var lpcm16 = require('node-record-lpcm16');
-
+var isRecording = false;
+//var voicecommands = require('./dist/voicecommands.js')
+eval(fs.readFileSync('./dist/voicecommands.js')+'');
 var request = require('request');
 
 var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
@@ -26,7 +28,7 @@ var isPi = false;
 
 //Config
 WEBSERVER_PORT = 80; //Listening port
-WIT_ACCESS_TOKEN = '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O';
+
 exec('export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;');
 app.use(express.static(__dirname + '/public'));
 
@@ -78,7 +80,7 @@ function textToSpeech(text, lang) {
 function playSound(file) {
     var playcmd = 'omxplayer'; //ffplay -i
     var playArgs = ''; //' -v quiet -nodisp -autoexit';
-    exec(playcmd+" ./speech/"+file+".mp3" + playArgs);
+    exec(playcmd + " " + file + playArgs);
 }
 
 function KaKu(letter, code, onoff, res) {
@@ -171,77 +173,76 @@ https.listen(443, function(){
 
 app.get('/start-listening', function(req, res) {
     listenToSpeech(res);
+    console.log('Listening...');
     return res.send('Listening!');
 });
 
-function listenToSpeech(res) {
-    console.log('Listening...');
-    sendLirc('sonytv', 'KEY_MUTE');
-    playSound('./dist/homer-hello.ogg');
+app.get('/stop-listening', function(req, res) {
+    stopListening();
+    console.log('Stopped listening...');
+    return res.send('Stop listening!');
+});
+
+
+function stopListening() {
+    if (isRecording == false) {
+        return;
+    }
+    lpcm16.stop();
     isRecording = true;
-    lpcm16.start({
-            verbose: true,
-            recordProgram: 'arecord'
-        }).pipe(request.post({
-            'url'     : 'https://api.wit.ai/speech?client=chromium&lang=en-us&output=json',
-            'headers' : {
-                'Accept'        : 'application/vnd.wit.20160202+json',
-                'Authorization' : 'Bearer ' + WIT_ACCESS_TOKEN,
-                'Content-Type'  : 'audio/wav'
-            }
-    }, function(err,httpResponse,body) {
-        isRecording = false;
-        parseSpeech(JSON.parse(body));
-    }));
-    setTimeout(function () {
-        lpcm16.stop();
-        sendLirc('sonytv', 'KEY_MUTE');
-    }, 4000);
+    sendLirc('sonytv', 'KEY_MUTE');
 }
 
+function listenToSpeech(res) {
+    if (isRecording == true) {
+        return;
+    }
+    console.log('Listening...');
+    isRecording = true;
+    sendLirc('sonytv', 'KEY_MUTE');
+    playSound('./dist/homer-hello.ogg');
+    setTimeout(function() {
+
+        lpcm16.start({
+            verbose: false,
+            recordProgram: 'arecord'
+        }).pipe(request.post({
+                'url'     : 'https://api.wit.ai/speech?client=chromium&lang=en-us&output=json',
+                'headers' : {
+                    'Accept'        : 'application/vnd.wit.20160202+json',
+                    'Authorization' : 'Bearer ' + voicecommands.witAiKey,
+                    'Content-Type'  : 'audio/wav'
+                }
+            }, function(err,httpResponse,body) {
+                isRecording = false;
+                console.log(body);
+                parseSpeech(JSON.parse(body));
+            }));
+        setTimeout(function () {
+            stopListening();
+        }, 5000);
+    }, 850);
+}
+console.log(voicecommands.commands);
 function parseSpeech(res) {
-    if (res.outcomes[0] == undefined) {
+    if (res.outcomes == undefined || res.outcomes.length == 0) {
+        textToSpeech('Lol. Sorry. I did not understand a word of that.');
         console.log('No outcomes.');
         return;
     }
-    _.each(res.outcomes[0].entities, function(entity) {
-        entity = entity[0];
-        if (res.outcomes[0].confidence < .50) {
-            return
+    _.each(res.outcomes, function(outcome) {
+        if (outcome.confidence < .50) {
+            textToSpeech('You said ' + outcome._text + '. I am not sure what you ment.');
+            return;
         }
-        console.log(res.outcomes[0].intent, entity._entity, entity.value, res.outcomes[0].confidence);
-        switch (res.outcomes[0].intent) {
-            case 'TV_Control':
-                switch (entity._entity) {
-                    case 'on_off':
-                        switch (entity.value) {
-                            case 'on':
-                                KaKu('M', '20', 'on')
-                                break;
-                            case 'off':
-                                KaKu('M', '20', 'off')
-                                break;
-                        }
-                        break;
-                }
-                break;
-            case 'Lights_control':
-                switch (entity._entity) {
-                    case 'on_off':
-                        switch (entity.value) {
-                            case 'on':
-                                KaKu('M', '10', 'on')
-                                break;
-                            case 'off':
-                                KaKu('M', '10', 'off')
-                                break;
-                        }
-                        break;
-                }
-                break;
+
+        var commandFunction = voicecommands.commands[outcome.intent.toLowerCase()];
+        if (commandFunction != undefined && outcome.entities.length != 0) {
+            commandFunction(outcome.entities);
+        } else {
+            textToSpeech('Quite sure you said "' + outcome._text + '". But i have no commands assigned to that.');
         }
     });
-
 }
 
 process.on('uncaughtException', function(err) {

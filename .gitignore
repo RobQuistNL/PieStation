@@ -43,3 +43,5 @@ npm-backup2
 
 speech
 !speech/.gitdir
+
+dist/voicecommands.js
