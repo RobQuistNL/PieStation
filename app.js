@@ -234,7 +234,7 @@ function listenToSpeech(res) {
         setTimeout(function () {
             stopListening();
         }, 5000);
-    }, 850);
+    }, 900);
 }
 console.log(voicecommands.commands);
 function parseSpeech(res) {

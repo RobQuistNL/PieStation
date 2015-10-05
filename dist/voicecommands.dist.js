@@ -8,9 +8,10 @@ function dateDiffInDays(a, b) {
     return Math.floor((utc2 - utc1) / _MS_PER_DAY);
 }
 
+var channels = JSON.parse(fs.readFileSync('./public/config/channels.json'));
 
 var voicecommands = {
-    witAiKey: '',
+    witAiKey: 'xxx',
     commands: {
         tv_control: function(entities) {
             if (entities['on_off'][0]['value'] == 'on') {
@@ -50,13 +51,30 @@ var voicecommands = {
             }
 
             sonybravia.sendIRCC('hdmi1'); //TV
-
+            var channelNumber = undefined;
+            var pad = '000';
             if (entities['number'] != undefined) {
-                textToSpeech('Sorry, i can not yet change the tv channel to number ' + entities['number'][0]['value']);
+                textToSpeech('Switching TV to channel ' + entities['number'][0]['value']);
+                channelNumber = '' + entities['number'][0]['value'];
             } else {
-                textToSpeech('Sorry, i can not yet change the tv channel to ' + entities['channel'][0]['value']);
+                _.each(channels, function(channel) {
+                    if (channel.name.toLowerCase() == entities['channel'][0]['value'].toLowerCase()) {
+                        channelNumber = '' + channel.channel;
+                        textToSpeech('Switching TV to ' + entities['channel'][0]['value']);
+                    }
+                });
             }
-
+            if (channelNumber != undefined) {
+                channelNumber = pad.substring(0, pad.length - channelNumber.length) + channelNumber;
+                var sendingTimeout = 500;
+                var __key_0 = 'KEY_'+channelNumber.charAt(0);
+                var __key_1 = 'KEY_'+channelNumber.charAt(1);
+                var __key_2 = 'KEY_'+channelNumber.charAt(2);
+                setTimeout(function() {sendLirc('humax', __key_0);},sendingTimeout);
+                setTimeout(function() {sendLirc('humax', __key_1);},sendingTimeout*2);
+                setTimeout(function() {sendLirc('humax', __key_2);},sendingTimeout*3);
+                setTimeout(function() {console.log("irsend SEND_ONCE ledstrip "+lastLedKey); lirc.exec("irsend SEND_ONCE ledstrip "+lastLedKey, function(error, stdout, stderr){});},sendingTimeout*4);
+            }
         },
         tv_volume: function(entities) {
             if (entities['number'] == undefined) {
@@ -71,6 +89,39 @@ var voicecommands = {
                 sonybravia.setVolume(entities['number'][0]['value']);
             }
         },
+        light_color: function(entities) {
+            if (entities['color'] == undefined) {
+                textToSpeech('I have no idea what colour you ment');
+                return;
+            }
+
+            if (entities['color'][0]['value'] != 'off') {
+                sendLirc('ledstrip', 'KEY_POWER');
+            } else {
+                sendLirc('ledstrip', 'KEY_POWER2');
+                return;
+            }
+
+            var colormap = {
+                green: 'KEY_GREEN',
+                blue: 'KEY_BLUE',
+                red: 'KEY_RED',
+                lightblue: 'KEY_0',
+                purple: 'KEY_F6',
+                darkblue: 'KEY_F3',
+                darkgreen: 'KEY_BRL_DOT1',
+                yellow: 'KEY_BRL_DOT4',
+                deepblue: 'KEY_F5',
+                strobe: 'KEY_4',
+                rainbow: 'KEY_3',
+            };
+            var wishedColor = entities['color'][0]['value'].replace(/\s+/g, '').toLowerCase();
+            if (colormap[wishedColor] != undefined) {
+                setTimeout(function(){sendLirc('ledstrip', colormap[wishedColor]);}, 400);
+            } else {
+                textToSpeech('Those lights dont support the color ' + entities['color'][0]['value']);
+            }
+        },
         jokes: function(entities) {
             if (entities['joke'] == undefined) {
                 textToSpeech('Can you repeat that?');
@@ -80,18 +131,36 @@ var voicecommands = {
             switch (entities['joke'][0]['value']) {
                 case 'sweet lovin':
                     textToSpeech('Engaging love making mode');
-                    setTimeout(function() {sendLirc('sonytv', 'KEY_VOLUMEDOWN');}, 200);
+                    for (var i = 0; i <= 15; i++) {
+                        setTimeout(function() {sendLirc('sonytv', 'KEY_VOLUMEDOWN');}, 1000*i);
+                    }
                     setTimeout(function() {sendLirc('ledstrip', 'KEY_RED');}, 500);
                     setTimeout(function() {KaKu("M", 10, "off");}, 1000);
                     setTimeout(function() {playSound('./dist/letsgetiton.ogg');}, 2000);
                     break;
                 case 'joke':
-                    textToSpeech('I would love to tell you a joke my dear. But i dont know any.');
+                    request.get('http://files.dukesoft.nl/randomjoke.php',
+                        function(error, response, bodyRes){
+                            console.log(error);
+                            if (error != null) {
+                                textToSpeech('I cant find any jokes, sorry.');
+                                return;
+                            }
+                            textToSpeech(bodyRes);
+                        }
+                    );
                     break;
                 case 'yomama':
                     request('http://api.yomomma.info/', function(error, response, body) {
                         body = JSON.parse(body);
                         textToSpeech(body.joke);
+                    });
+
+                    break;
+                case 'chuck':
+                    request('http://api.icndb.com/jokes/random', function(error, response, body) {
+                        body = JSON.parse(body);
+                        textToSpeech(body.value.joke);
                     });
 
                     break;
@@ -184,16 +253,21 @@ var voicecommands = {
 
                 switch (checkfor) {
                     case 'general':
+                        sonybravia.setVolume(0);
+                        setTimeout(function(){sonybravia.setVolume(tv_volume)}, 10000);
                         textToSpeech(dateAsText + ' in ' + location + ' i would say "'+description+'". ' +
                             shorttempstring + '. ' + clouds + ' percent cloudy');
                         break;
                     case 'temperature':
+                        setTimeout(function(){sonybravia.setVolume(tv_volume)}, 5000);
                         textToSpeech(tempstring  + dateAsText + ' in ' + location);
                         break;
                     case 'rain':
+                        setTimeout(function(){sonybravia.setVolume(tv_volume)}, 5000);
                         textToSpeech('I would say "'+description+'" ' + dateAsText + ' in ' + location);
                         break;
                     case 'snow':
+                        setTimeout(function(){sonybravia.setVolume(tv_volume)}, 5000);
                         textToSpeech('I am quite sure if it will snow ' + dateAsText);
                         break;
                     default:

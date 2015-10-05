@@ -2,6 +2,7 @@ var fs = require('fs');
 var _ = require('underscore');
 var request = require('request');
 var moment = require('moment');
+var lastLedKey = 'lastled';
 
 function parseSpeech(res) {
     if (res.outcomes == undefined || res.outcomes.length == 0) {
@@ -32,12 +33,22 @@ eval(fs.readFileSync('./dist/voicecommands.js')+'');
 
 //var body = fs.readFileSync('./mockresponses/tvchannel/discoverychannel.json');
 //var body = fs.readFileSync('./mockresponses/tvchannel/channel6.json');
-//var body = fs.readFileSync('./mockresponses/tvchannel/computer.json');
-var body = fs.readFileSync('./mockresponses/tvchannel/playstation.json');
+var body = fs.readFileSync('./mockresponses/tvchannel/computer.json');
+//var body = fs.readFileSync('./mockresponses/tvchannel/playstation.json');
 
 var sonybravia = {};
 sonybravia.sendIRCC = function(cmd) {
     console.log(cmd);
+}
+
+var lirc = {};
+lirc.exec = function(device, key) {
+    console.log(device, key);
+}
+
+
+function sendLirc(device, key) {
+    console.log(device, key);
 }
 
 parseSpeech(JSON.parse(body));
