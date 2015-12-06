@@ -239,7 +239,7 @@ function listenToSpeech(res) {
 console.log(voicecommands.commands);
 function parseSpeech(res) {
     if (res.outcomes == undefined || res.outcomes.length == 0) {
-        textToSpeech('Lol. Sorry. I did not understand a word of that.');
+        //textToSpeech('Lol. Sorry. I did not understand a word of that.');
         console.log('No outcomes.');
         return;
     }

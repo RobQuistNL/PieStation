@@ -13,7 +13,7 @@
             '<DesiredVolume xmlns:dt="urn:schemas-microsoft-com:datatypes" dt:dt="ui2">'+ volume +'</DesiredVolume>' +
             '</m:SetVolume></SOAP-ENV:Body>' +
             '</SOAP-ENV:Envelope>';
-        var url = 'http://192.168.178.11:52323/upnp/control/RenderingControl';
+        var url = 'http://192.168.178.12:52323/upnp/control/RenderingControl';
 
         module.exports.request.post(
             {
@@ -42,7 +42,7 @@
 
         var code=irccCommands[IIRC];
         var body = '<?xml version="1.0"?><SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" SOAP-ENV:encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"><SOAP-ENV:Body><m:X_SendIRCC xmlns:m="urn:schemas-sony-com:service:IRCC:1"><IRCCCode xmlns:dt="urn:schemas-microsoft-com:datatypes" dt:dt="string">'+code+'</IRCCCode></m:X_SendIRCC></SOAP-ENV:Body></SOAP-ENV:Envelope>';
-        var url = 'http://192.168.178.11/IRCC';
+        var url = 'http://192.168.178.12/IRCC';
 
         module.exports.request.post(
             {

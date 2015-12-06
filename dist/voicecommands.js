@@ -11,7 +11,8 @@ function dateDiffInDays(a, b) {
 var channels = JSON.parse(fs.readFileSync('./public/config/channels.json'));
 
 var voicecommands = {
-    witAiKey: '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O',
+    //witAiKey: '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O', //English
+    witAiKey: '25ODB3AWUHXL67YBD4WERNCC46RPCH2G',
     commands: {
         tv_control: function(entities) {
             if (entities['on_off'][0]['value'] == 'on') {
