@@ -11,21 +11,32 @@ function dateDiffInDays(a, b) {
 var channels = JSON.parse(fs.readFileSync('./public/config/channels.json'));
 
 var voicecommands = {
-    //witAiKey: '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O', //English
-    witAiKey: '25ODB3AWUHXL67YBD4WERNCC46RPCH2G',
+    witAiKey: '2OSPY3KNG5JEHYFPSWXYV2Z4LV22FJ3O', //English
+    //witAiKey: '25ODB3AWUHXL67YBD4WERNCC46RPCH2G', //Dutch
     commands: {
-        tv_control: function(entities) {
-            if (entities['on_off'][0]['value'] == 'on') {
-                KaKu("M", 20, "on");
-            } else {
-                KaKu("M", 20, "off");
+        device_control: function(entities) {
+            var onoff = entities['on_off'][0]['value'];
+            if (onoff != 'on' && onoff != 'off') {
+                console.log('Dont know about ' + entities['on_off'][0]['value']);
+                return;
             }
-        },
-        lights_control: function(entities) {
-            if (entities['on_off'][0]['value'] == 'on') {
-                KaKu("M", 10, "on");
-            } else {
-                KaKu("M", 10, "off");
+
+            console.log('Turn ' + onoff + ' ' + entities['device'][0]['value']);
+            switch (entities['device'][0]['value']) {
+                case 'lights':
+                case 'light':
+                    switch (onoff) {
+                        case 'on':
+                            sendLirc('ledstrip', 'KEY_POWER');
+                            break;
+                        case 'off':
+                            sendLirc('ledstrip', 'KEY_POWER2');
+                            break;
+                    }
+                    break;
+                case 'tv':
+                    KaKu("M", 20, onoff);
+                    break;
             }
         },
         tv_channel: function(entities) {
@@ -96,13 +107,6 @@ var voicecommands = {
                 return;
             }
 
-            if (entities['color'][0]['value'] != 'off') {
-                sendLirc('ledstrip', 'KEY_POWER');
-            } else {
-                sendLirc('ledstrip', 'KEY_POWER2');
-                return;
-            }
-
             var colormap = {
                 green: 'KEY_GREEN',
                 blue: 'KEY_BLUE',
@@ -116,7 +120,13 @@ var voicecommands = {
                 strobe: 'KEY_4',
                 rainbow: 'KEY_3',
             };
+            console.log(entities['color']);
             var wishedColor = entities['color'][0]['value'].replace(/\s+/g, '').toLowerCase();
+            console.log('Wished:' +wishedColor);
+            console.log('2nd:' +entities['color'][1]['value']);
+            if (wishedColor == 'light' && entities['color'][1]['value'] != undefined) {
+                wishedColor = entities['color'][1]['value'].replace(/\s+/g, '').toLowerCase();
+            }
             if (colormap[wishedColor] != undefined) {
                 setTimeout(function(){sendLirc('ledstrip', colormap[wishedColor]);}, 400);
             } else {
@@ -223,7 +233,13 @@ var voicecommands = {
             }
             //console.log('Opening url:'+url, diffDays);
             request(url, function(a, b, body) {
-                var exported = JSON.parse(body);
+                try {
+                    var exported = JSON.parse(body);
+                } catch (e) {
+                    console.log(e, body);
+                    return;
+                }
+
                 console.log(exported);
                 var description = 'unknown';
                 var clouds = 'unknown';

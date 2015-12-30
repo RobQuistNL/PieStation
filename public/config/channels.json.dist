@@ -1,0 +1,153 @@
+[
+    {
+        "name": "Nederland 1",
+        "channel": 1,
+        "icon": "nl1.png",
+        "order": 6
+    },
+    {
+        "name": "Nederland 2",
+        "channel": 2,
+        "icon": "nl2.png",
+        "order": 100
+    },
+    {
+        "name": "Nederland 3",
+        "channel": 3,
+        "icon": "nl3.png",
+        "order": 100
+    },
+
+    {
+        "name": "RTL 4",
+        "channel": 4,
+        "icon": "rtl4.png",
+        "order": 100
+    },
+    {
+        "name": "RTL 5",
+        "channel": 5,
+        "icon": "rtl5.png",
+        "order": 100
+    },
+    {
+        "name": "SBS 6",
+        "channel": 6,
+        "icon": "sbs6.png",
+        "order": 100
+    },
+    {
+        "name": "RTL 7",
+        "channel": 7,
+        "icon": "rtl7.png",
+        "order": 100
+    },
+    {
+        "name": "RTL 8",
+        "channel": 10,
+        "icon": "rtl8.png",
+        "order": 100
+    },
+    {
+        "name": "Veronica / Disney XD",
+        "channel": 8,
+        "icon": "veronica.png",
+        "order": 7
+    },
+    {
+        "name": "Net 5",
+        "channel": 9,
+        "icon": "net5.png",
+        "order": 100
+    },
+    {
+        "name": "FOX",
+        "channel": 11,
+        "icon": "fox.png",
+        "order": 2
+    },
+    {
+        "name": "Comedy Central",
+        "channel": 15,
+        "icon": "cc.png",
+        "order": 1
+    },
+    {
+        "name": "13th Street",
+        "channel": 22,
+        "icon": "13thstreet.png",
+        "order": 100
+    },
+    {
+        "name": "BBC1",
+        "channel": 61,
+        "icon": "bbc1.png",
+        "order": 100
+    },
+    {
+        "name": "BBC2",
+        "channel": 62,
+        "icon": "bbc2.png",
+        "order": 100
+    },
+    {
+        "name": "CNN",
+        "channel": 503,
+        "icon": "cnn.png",
+        "order": 100
+    },
+    {
+        "name": "Discovery Channel",
+        "channel": 17,
+        "icon": "discovery.png",
+        "order": 3
+    },
+    {
+        "name": "Discovery Science",
+        "channel": 202,
+        "icon": "discoveryscience.png",
+        "order": 3
+    },
+    {
+        "name": "Eurosport",
+        "channel": 20,
+        "icon": "eurosport.png",
+        "order": 100
+    },
+    {
+        "name": "MTV",
+        "channel": 23,
+        "icon": "mtv.png",
+        "order": 100
+    },
+    {
+        "name": "National Geographic",
+        "channel": 18,
+        "icon": "natgeo.png",
+        "order": 4
+    },
+    {
+        "name": "Nickelodeon",
+        "channel": 14,
+        "icon": "nickelodeon.png",
+        "order": 100
+    },
+    {
+        "name": "SBS 9",
+        "channel": 19,
+        "icon": "sbs9.png",
+        "order": 100
+    },
+    {
+        "name": "TLC",
+        "channel": 21,
+        "icon": "tlc.png",
+        "order": 5
+    },
+    {
+        "name": "Xite",
+        "channel": 25,
+        "icon": "xite.png",
+        "order": 100
+    }
+]

@@ -8,6 +8,8 @@ var app = express();
 var fs = require('fs');
 var moment = require('moment');
 var lpcm16 = require('node-record-lpcm16');
+var sprintf = require("sprintf-js").sprintf,
+    vsprintf = require("sprintf-js").vsprintf;
 var isRecording = false;
 //var voicecommands = require('./dist/voicecommands.js')
 eval(fs.readFileSync('./dist/voicecommands.js')+'');
@@ -75,17 +77,22 @@ function textToSpeech(text, lang) {
         lang = 'en';
     }
     text = encodeURIComponent(text);
+    console.log('SPEAK: ' + text);
 
     var filename = md5(text);
     var playcmd = 'omxplayer'; //ffplay -i
     var playArgs = ''; //' -v quiet -nodisp -autoexit';
     fs.exists('./speech/'+filename+'.mp3', function (exists) {
         if (exists) {
+            sonybravia.setVolume(0);
             exec(playcmd+" ./speech/"+filename+".mp3" + playArgs);
+            setTimeout(function(){sonybravia.setVolume(tv_volume);}, text.length*25);
         } else {
             exec("curl 'http://translate.google.com/translate_tts?&ie=UTF-8&q="+text+"&tl="+lang+"&client=t' -H " +
                 "'Referer: http://translate.google.com/' -H 'User-Agent: stagefright/1.2 (Linux;Android 5.0)' " +
                 "> ./speech/"+filename+".mp3; "+playcmd+" ./speech/"+filename+".mp3" + playArgs);
+            sonybravia.setVolume(0);
+            setTimeout(function(){sonybravia.setVolume(tv_volume);}, text.length*50);
         }
     });
 }
@@ -158,6 +165,7 @@ app.get('/send/:device/:key', function(req, res) {
 
 function sendLirc(deviceName, key, res) {
     // send command to irsend
+    console.log('Send IR ' + deviceName + ' - ' + key);
     var command = "irsend SEND_ONCE "+deviceName+" "+key;
     lirc.exec(command, function(error, stdout, stderr){
         if (res != undefined) {
@@ -186,13 +194,11 @@ https.listen(443, function(){
 
 app.get('/start-listening', function(req, res) {
     listenToSpeech(res);
-    console.log('Listening...');
     return res.send('Listening!');
 });
 
 app.get('/stop-listening', function(req, res) {
     stopListening();
-    console.log('Stopped listening...');
     return res.send('Stop listening!');
 });
 
@@ -202,7 +208,7 @@ function stopListening() {
         return;
     }
     lpcm16.stop();
-    isRecording = true;
+    isRecording = false;
     sonybravia.setVolume(tv_volume);
 }
 
@@ -210,7 +216,7 @@ function listenToSpeech(res) {
     if (isRecording == true) {
         return;
     }
-    console.log('Listening...');
+    console.log('Recording...');
     isRecording = true;
     sonybravia.setVolume(0);
     playSound('./dist/homer-hello.ogg');
@@ -229,7 +235,12 @@ function listenToSpeech(res) {
             }, function(err,httpResponse,body) {
                 isRecording = false;
                 console.log(body);
-                parseSpeech(JSON.parse(body));
+                try {
+                    parseSpeech(JSON.parse(body));
+                } catch (exception) {
+                    console.log(exception);
+                }
+
             }));
         setTimeout(function () {
             stopListening();
@@ -240,12 +251,14 @@ console.log(voicecommands.commands);
 function parseSpeech(res) {
     if (res.outcomes == undefined || res.outcomes.length == 0) {
         //textToSpeech('Lol. Sorry. I did not understand a word of that.');
+        textToSpeech('Nope.');
         console.log('No outcomes.');
         return;
     }
     _.each(res.outcomes, function(outcome) {
         if (outcome.confidence < .50) {
-            textToSpeech('You said ' + outcome._text + '. I am not sure what you ment.');
+            //textToSpeech('You said ' + outcome._text + '. I am not sure what you ment.');
+            textToSpeech('Nope.');
             return;
         }
 
@@ -256,6 +269,7 @@ function parseSpeech(res) {
             textToSpeech('Quite sure you said "' + outcome._text + '". But i have no commands assigned to that.');
         }
     });
+
 }
 
 process.on('uncaughtException', function(err) {

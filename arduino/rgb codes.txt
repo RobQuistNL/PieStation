@@ -1,0 +1,30 @@
+ADDRESS 				UNIT		Effect
+10000 Select Program	
+						0			Off
+						1			Static Color 1
+						2			Static Color 2
+						3			Fade rainbow
+						4			Pulse / Fade color 1 to color 2
+
+10001 Set color			UNIT		Effect
+						0			Red 1
+						1			Green 1
+						2			Blue 1
+						3			Red 1 Multiplier
+						4			Green 1 Multiplier
+						5			Blue 1 Multiplier
+						
+						6			Red 2
+						7			Green 2
+						8			Blue 2
+						9			Red 2 Multiplier
+						10			Green 2 Multiplier
+						11			Blue 2 Multiplier
+						
+						12			Apply color
+						
+10002 Configuration		UNIT		Effect
+						0			Fade speed
+						1			Fade speed multiplier
+						2			Fade times
+						3			Fade times multiplier
