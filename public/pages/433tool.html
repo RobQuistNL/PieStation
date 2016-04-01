@@ -1,0 +1,73 @@
+<p class="lead">433 Tools</p>
+<div id="buttons">
+    <h4>Program</h4>
+    <select id="program">
+        <option value="0">off</option>
+        <option value="1">static 1</option>
+        <option value="2">static 2</option>
+        <option value="3">rainbow</option>
+        <option value="4">pulse</option>
+    </select>
+    <button id="sendProgram">Send</button><br/><br/>
+
+    <h4>Colors</h4>
+    <b>Colour 1:</b><br/>
+    Red: <input id="r_1" type="number" min="0" max="255" /><br/>
+    Green: <input id="g_1" type="number" min="0" max="255" /><br/>
+    Blue: <input id="b_1" type="number" min="0" max="255" /><br/>
+    <button id="sendColor1">Send</button><br/>
+
+    <b>Colour 2:</b><br/>
+    Red: <input id="r_2" type="number" min="0" max="255" /><br/>
+    Green: <input id="g_2" type="number" min="0" max="255" /><br/>
+    Blue: <input id="b_2" type="number" min="0" max="255" /><br/>
+    <button id="sendColor2">Send</button><br/>
+
+    <h4>Config</h4>
+    <select id="config">
+        <option value="0">SET_FADE_SPEED</option>
+        <option value="1">SET_RAINBOW_SPEED</option>
+        <option value="2">SET_FADE_TIMES</option>
+        <option value="3">SET_FADE_TIMES_MULTIPLIER</option>
+    </select>
+    <input type="number" id="configValue"/>
+    <button id="sendConfig">Send</button><br/><br/>
+</div>
+
+        <script type="text/javascript">
+            $('#sendProgram').on('click', function() {
+                $.ajax({url: "433/program "+$('#program').val()+"?"+new Date().getTime()});
+            });
+
+            $('#sendConfig').on('click', function() {
+                $.ajax({url: "433/config "+$('#config').val()+" " + $('#configValue').val() + "?"+new Date().getTime()});
+            });
+
+            $('#sendColor1').on('click', function() {
+                $.ajax({url: "433/color 0 "+$('#r_1').val()+"?"+new Date().getTime(), success: function() {
+                    $.ajax({url: "433/color 1 "+$('#g_1').val()+"?"+new Date().getTime(), success: function() {
+                        $.ajax({url: "433/color 2 "+$('#b_1').val()+"?"+new Date().getTime()}).done(function() {
+                            alert('Colours set');
+                        });
+                    }});
+
+                }
+
+                });
+
+            });
+
+            $('#sendColor2').on('click', function() {
+                $.ajax({url: "433/color 3 "+$('#r_2').val()+"?"+new Date().getTime(), success: function() {
+                    $.ajax({url: "433/color 4 "+$('#g_2').val()+"?"+new Date().getTime(), success: function() {
+                        $.ajax({url: "433/color 5 "+$('#b_2').val()+"?"+new Date().getTime()}).done(function() {
+                            alert('Colours set');
+                        });
+                    }});
+
+                }
+
+                });
+
+            });
+        </script>
