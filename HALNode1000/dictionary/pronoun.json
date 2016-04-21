@@ -1,0 +1,110 @@
+{
+    personal: {
+        singular: {
+            first: {
+                subjective: {
+                    male: 'i',
+                    female: 'i',
+                    object: 'i'
+                },
+                objective: {
+                    male: 'me',
+                    female: 'me',
+                    object: 'me'
+                },
+                prosessive: {
+                    male: 'mine',
+                    female: 'mine',
+                    object: 'mine'
+                }
+            },
+            second: {
+                subjective: {
+                    male: 'you',
+                    female: 'you',
+                    object: 'you'
+                },
+                objective: {
+                    male: 'you',
+                    female: 'you',
+                    object: 'you'
+                },
+                prosessive: {
+                    male: 'yours',
+                    female: 'yours',
+                    object: 'yours'
+                }
+            },
+            third: {
+                subjective: {
+                    male: 'he',
+                    female: 'she',
+                    object: 'it'
+                },
+                objective: {
+                    male: 'him',
+                    female: 'her',
+                    object: 'it'
+                },
+                prosessive: {
+                    male: 'his',
+                    female: 'hers',
+                    object: 'its'
+                }
+            }
+        },
+        plural: {
+            first: {
+                subjective: {
+                    male: 'we',
+                    female: 'we',
+                    object: 'we'
+                },
+                objective: {
+                    male: 'us',
+                    female: 'us',
+                    object: 'us'
+                },
+                prosessive: {
+                    male: 'ours',
+                    female: 'ours',
+                    object: 'ours'
+                }
+            },
+            second: {
+                subjective: {
+                    male: 'you',
+                    female: 'you',
+                    object: 'you'
+                },
+                objective: {
+                    male: 'you',
+                    female: 'you',
+                    object: 'you'
+                },
+                prosessive: {
+                    male: 'yours',
+                    female: 'yours',
+                    object: 'yours'
+                }
+            },
+            third: {
+                subjective: {
+                    male: 'they',
+                    female: 'they',
+                    object: 'they'
+                },
+                objective: {
+                    male: 'them',
+                    female: 'them',
+                    object: 'them'
+                },
+                prosessive: {
+                    male: 'theirs',
+                    female: 'theirs',
+                    object: 'theirs'
+                }
+            }
+        }
+    }
+}

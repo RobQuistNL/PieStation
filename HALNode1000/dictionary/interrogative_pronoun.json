@@ -1,0 +1,9 @@
+{
+    who: 'person',
+    where: 'location',
+    when: 'moment',
+    why: 'reason',
+    what: 'object',
+    which: 'choice',
+    how: 'method'
+}

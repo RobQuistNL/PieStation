@@ -1,0 +1,36 @@
+{
+    be: {
+        present: {
+            tense: {
+                i: 'am',
+                we: 'are',
+                you: 'are',
+                hesheit: 'is',
+                they: 'are'
+            },
+            participle: {
+                i: 'am being',
+                we: 'are being',
+                you: 'are being',
+                hesheit: 'is being',
+                they: 'are being'
+            }
+        },
+        past: {
+            tense: {
+                i: 'was',
+                we: 'were',
+                you: 'were',
+                hesheit: 'was',
+                they: 'were'
+            },
+            participle: {
+                i: 'have been',
+                we: 'have been',
+                you: 'have been',
+                hesheit: 'has been',
+                they: 'have been'
+            }
+        }
+    }
+}

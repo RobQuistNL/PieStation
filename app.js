@@ -15,6 +15,35 @@ var isRecording = false;
 eval(fs.readFileSync('./dist/voicecommands.js')+'');
 var request = require('request');
 
+var basicAuth = require('basic-auth');
+
+var auth = function (req, res, next) {
+    function unauthorized(res) {
+        res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
+        return res.send(401);
+    };
+
+    var user = basicAuth(req);
+
+    if (/^\/nfc\/[a-z0-9]+$/.test(req.url)) {
+        return next();
+    }
+
+    if (/^\/trigger\/[a-z0-9]+\/[a-z0-9]+$/.test(req.url)) {
+        return next();
+    }
+
+    if (!user || !user.name || !user.pass) {
+        return unauthorized(res);
+    };
+
+    if (user.name === 'rob' && user.pass === 'SuperGeheim123qweASD') {
+        return next();
+    } else {
+        return unauthorized(res);
+    };
+};
+
 //var privateKey  = fs.readFileSync('sslcert/server.key', 'utf8');
 //var certificate = fs.readFileSync('sslcert/server.crt', 'utf8');
 //var credentials = {key: privateKey, cert: certificate};
@@ -65,6 +94,7 @@ US:
  WillUpClose (emotive voice) <- Whispering, lol
  */
 exec('export AUDIODEV=hw:1,0; export AUDIODRIVER=alsa;');
+app.use('/', auth);
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function(socket){
@@ -84,7 +114,7 @@ io.on('connection', function(socket){
     });
 });
 
-app.get('/send/kaku/:letter/:code/:onoff', function(req, res) {
+app.get('/send/kaku/:letter/:code/:onoff',auth, function(req, res) {
     // KlikAanKlikUit remote power thingies
     var letter = req.params.letter;
     var code = req.params.code;
@@ -92,19 +122,19 @@ app.get('/send/kaku/:letter/:code/:onoff', function(req, res) {
     KaKu (letter, code, onoff, res);
 });
 
-app.get('/433/:string', function(req, res) {
+app.get('/433/:string',auth, function(req, res) {
     // KlikAanKlikUit remote power thingies
     var string = req.params.string;
     do433 (string, res);
 });
 
 
-app.get('/tv/:ircc', function(req, res) {
+app.get('/tv/:ircc',auth, function(req, res) {
     var ircc = req.param.ircc;
     sonybravia.sendIRCC(ircc);
 });
 
-app.get('/tvvolume/:volume', function(req, res) {
+app.get('/tvvolume/:volume',auth, function(req, res) {
     var volume = req.param("volume");
     sonybravia.setVolume(volume);
 });
@@ -184,12 +214,22 @@ function KaKu(letter, code, onoff, res) {
     });
 }
 
-app.get('/tts/:string/:lang', function(req, res) {
+app.get('/nfc/:tag', function(req, res) {
+    console.log('NFC: ' + req.param("tag"));
+    res.send("thnx");
+});
+
+app.get('/trigger/:user/:type', function(req, res) {
+    console.log('Trigger for ' + req.param("user") + " - " + req.param("type"));
+    res.send("thnx");
+});
+
+app.get('/tts/:string/:lang',auth, function(req, res) {
     textToSpeech(req.param("string"), req.param("lang"));
     return res.send('Speaking');
 });
 
-app.get('/send/:device/:key', function(req, res) {
+app.get('/send/:device/:key',auth, function(req, res) {
     var deviceName = req.param("device");
     var key = req.param("key").toUpperCase();
 
@@ -220,10 +260,10 @@ app.get('/send/:device/:key', function(req, res) {
     }
 
     sendLirc(deviceName, key, res);
-    if (deviceName != 'ledstrip') {
+    /*if (deviceName != 'ledstrip') {
         console.log('Sending last led strip key:' + lastLedKey);
         lirc.exec("irsend SEND_ONCE ledstrip "+lastLedKey, function(error, stdout, stderr){});
-    }
+    }*/
 });
 
 function sendLirc(deviceName, key, res) {
@@ -241,7 +281,7 @@ function sendLirc(deviceName, key, res) {
     });
 }
 
-app.get('/get/devices', function(req, res) {
+app.get('/get/devices',auth, function(req, res) {
     return res.send(lirc.devices);
 });
 
@@ -255,12 +295,12 @@ http.listen(WEBSERVER_PORT, function(){
     console.log('listening on *:443');
 });
 */
-app.get('/start-listening', function(req, res) {
+app.get('/start-listening',auth, function(req, res) {
     listenToSpeech(res);
     return res.send('Listening!');
 });
 
-app.get('/stop-listening', function(req, res) {
+app.get('/stop-listening',auth, function(req, res) {
     stopListening();
     return res.send('Stop listening!');
 });

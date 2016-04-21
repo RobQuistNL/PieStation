@@ -1,0 +1,78 @@
+{
+    singular: {
+        first: {
+            subject: {
+                male: 'I',
+                female: 'I',
+                object: 'I'
+            },
+            object: {
+                male: 'me',
+                female: 'me',
+                object: 'me'
+            }
+        },
+        second: {
+            subject: {
+                male: 'you',
+                female: 'you',
+                object: 'you'
+            },
+            object: {
+                male: 'you',
+                female: 'you',
+                object: 'you'
+            }
+        },
+        third: {
+            subject: {
+                male: 'he',
+                female: 'she',
+                object: 'it'
+            },
+            object: {
+                male: 'him',
+                female: 'her',
+                object: 'it'
+            }
+        }
+    },
+    plural: {
+        first: {
+            subject: {
+                male: 'we',
+                female: 'we',
+                object: 'we'
+            },
+            object: {
+                male: 'us',
+                female: 'us',
+                object: 'us'
+            }
+        },
+        second: {
+            subject: {
+                male: 'you',
+                female: 'you',
+                object: 'you'
+            },
+            object: {
+                male: 'you',
+                female: 'you',
+                object: 'you'
+            }
+        },
+        third: {
+            subject: {
+                male: 'they',
+                female: 'they',
+                object: 'they'
+            },
+            object: {
+                male: 'them',
+                female: 'them',
+                object: 'them'
+            }
+        }
+    }
+}
