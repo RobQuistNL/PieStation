@@ -68,6 +68,7 @@ ADDRESS        UNIT    Effect
 #define PROG_STATIC_2 2
 #define PROG_RAINBOW 3
 #define PROG_PULSE 4
+#define PROG_FLASH_RED 5
 
 long current_rgb[3];
 long target_rgb[3];
@@ -77,6 +78,16 @@ long rgb_1[3];
 long rgb_2[3];
 long rgb_r_1[3];
 long rgb_r_2[3];
+long rgb_r_1_m[3];
+long rgb_r_2_m[3];
+
+
+long b_rgb_1[3];
+long b_rgb_2[3];
+long b_rgb_r_1[3];
+long b_rgb_r_2[3];
+long b_rgb_r_1_m[3];
+long b_rgb_r_2_m[3];
 
 long rgbval;
 float hue=0.0000, saturation=1, value=1;
@@ -87,9 +98,11 @@ int animationcounter = 0;
 int animationlength = 120;
 int HUE_DELTA = 5;
 
+int flash_max = 3;
+int flash_counter = flash_max;
+int program_back = PROG_RAINBOW;
 int program = PROG_RAINBOW;
-
-long bright[3] = { 256, 128, 90};
+int animationlength_back = animationlength;
 
 long k;
 
@@ -100,9 +113,11 @@ void setup () {
     rgb_2[k]=0;
     rgb_r_1[k]=0;
     rgb_r_2[k]=0;
+    rgb_r_1_m[k]=0;
+    rgb_r_2_m[k]=0;
     current_rgb[k]=0;
     target_rgb[k]=0;
-    analogWrite(PIN_RED + k, current_rgb[k] * bright[k]/256);
+    analogWrite(PIN_RED + k, current_rgb[k]);
   }
 
   Serial.begin(115200);
@@ -115,6 +130,7 @@ void setup () {
   // to connect the receiver.
   NewRemoteReceiver::init(0, PIN_DATA, showCode);
 }
+//long bright[3] = { 256, 128, 90};
 bool pulse = 0;
 void loop() {
   switch (program) {
@@ -124,9 +140,9 @@ void loop() {
             hue=0.0;
           }
           rgbval=HSV_to_RGB(hue/1000, saturation, value);
-          current_rgb[0] = (rgbval & 0x00FF0000) >> 16; // there must be better ways
-          current_rgb[1] = (rgbval & 0x0000FF00) >> 8;
-          current_rgb[2] = rgbval & 0x000000FF;
+          current_rgb[0] = ((rgbval & 0x00FF0000) >> 16) * 255/255; // there must be better ways
+          current_rgb[1] = ((rgbval & 0x0000FF00) >> 8) * 128/255;
+          current_rgb[2] = (rgbval & 0x000000FF) * 90/255;
           break;
       case PROG_OFF:
           if (animationcounter < animationlength) {
@@ -180,6 +196,42 @@ void loop() {
             }
           }
           break;
+      case PROG_FLASH_RED:
+          if (animationcounter == animationlength) {
+              pulse = !pulse;
+              animationcounter = 0;
+              begin_rgb[0] = current_rgb[0];
+              begin_rgb[1] = current_rgb[1];
+              begin_rgb[2] = current_rgb[2];
+              if (pulse == 0) {
+                  flash_counter++;
+              }
+              if (pulse == 0 && flash_counter == flash_max) {
+                  for (k = 0; k<3; k++) {
+                    rgb_1[k] = b_rgb_1[k];
+                    rgb_2[k] = b_rgb_2[k];
+                    rgb_r_1[k] = b_rgb_r_1[k];
+                    rgb_r_2[k] = b_rgb_r_2[k];
+                    rgb_r_1_m[k] = b_rgb_r_1_m[k];
+                    rgb_r_2_m[k] = b_rgb_r_2_m[k];
+                  }
+
+                  program = program_back;
+                  animationcounter = 0;
+                  animationlength = animationlength_back;
+              }
+          }
+  
+          if (pulse) {
+            for (k = 0; k<3; k++) {
+              current_rgb[k] = easeInOutCubic(animationcounter, begin_rgb[k], rgb_2[k] - begin_rgb[k], animationlength);
+            }
+          } else {
+            for (k = 0; k<3; k++) {
+              current_rgb[k] = easeInOutCubic(animationcounter, begin_rgb[k], rgb_1[k] - begin_rgb[k], animationlength);
+            }
+          }
+          break;
   }
   
   delay(stepSpeed);
@@ -190,15 +242,15 @@ void loop() {
 }
 
 void setRed(int color) {
-  analogWrite(PIN_RED, color * bright[0]/256);
+  analogWrite(PIN_RED, color);
 }
 
 void setGreen(int color) {
-  analogWrite(PIN_GREEN, color * bright[1]/256);
+  analogWrite(PIN_GREEN, color);
 }
 
 void setBlue(int color) {
-  analogWrite(PIN_BLUE, color * bright[2]/256);
+  analogWrite(PIN_BLUE, color);
 }
 
 int easeInOutCubic(int t, int b, int c, int d) {
@@ -220,18 +272,46 @@ void showCode(NewRemoteCode receivedCode) {
           case PROG_STATIC_2:
           case PROG_RAINBOW:
           case PROG_PULSE:
-              hue = 0;
               program = receivedCode.unit;
+              hue = 0;
               animationcounter = 0;
               begin_rgb[0] = current_rgb[0];
               begin_rgb[1] = current_rgb[1];
               begin_rgb[2] = current_rgb[2];
-              rgb_1[0] = rgb_r_1[0];
-              rgb_1[1] = rgb_r_1[1];
-              rgb_1[2] = rgb_r_1[2];
-              rgb_2[0] = rgb_r_2[0];
-              rgb_2[1] = rgb_r_2[1];
-              rgb_2[2] = rgb_r_2[2];
+              rgb_1[0] = rgb_r_1[0] + rgb_r_1_m[0];
+              rgb_1[1] = rgb_r_1[1] + rgb_r_1_m[1];
+              rgb_1[2] = rgb_r_1[2] + rgb_r_1_m[2];
+              rgb_2[0] = rgb_r_2[0] + rgb_r_2_m[0];
+              rgb_2[1] = rgb_r_2[1] + rgb_r_2_m[1];
+              rgb_2[2] = rgb_r_2[2] + rgb_r_2_m[2];
+              break;
+          case PROG_FLASH_RED:
+              program_back = program;
+              program = receivedCode.unit;
+              animationlength = 10;
+              for (k = 0; k<3; k++) {
+                b_rgb_1[k] = rgb_1[k];
+                b_rgb_2[k] = rgb_2[k];
+                b_rgb_r_1[k] = rgb_r_1[k];
+                b_rgb_r_2[k] = rgb_r_2[k];
+                b_rgb_r_1_m[k] = rgb_r_1_m[k];
+                b_rgb_r_2_m[k] = rgb_r_2_m[k];
+              }
+              animationcounter = 0;
+              flash_counter = 0;
+
+              rgb_1[0] = 255;
+              rgb_1[1] = 0;
+              rgb_1[2] = 0;
+              
+              current_rgb[0] = rgb_1[0];
+              current_rgb[1] = rgb_1[1];
+              current_rgb[2] = rgb_1[2];
+
+              rgb_2[0] = 0;
+              rgb_2[1] = 0;
+              rgb_2[2] = 0;
+            
               break;
         }
         break;
@@ -247,13 +327,13 @@ void showCode(NewRemoteCode receivedCode) {
               rgb_r_1[2] = level;
               break;
           case SET_RED_1_MULTIPLIER:
-              rgb_r_1[0] *= level+1;
+              rgb_r_1_m[0] = level*16;
               break;
           case SET_GREEN_1_MULTIPLIER:
-              rgb_r_1[1] *= level+1;
+              rgb_r_1_m[1] = level*16;
               break;
           case SET_BLUE_1_MULTIPLIER:
-              rgb_r_1[2] *= level+1;
+              rgb_r_1_m[2] = level*16;
               break;
 
           case SET_RED_2:
@@ -266,13 +346,13 @@ void showCode(NewRemoteCode receivedCode) {
               rgb_r_2[2] = level;
               break;
           case SET_RED_2_MULTIPLIER:
-              rgb_r_2[0] *= level+1;
+              rgb_r_2_m[0] = level*16;
               break;
           case SET_GREEN_2_MULTIPLIER:
-              rgb_r_2[1] *= level+1;
+              rgb_r_2_m[1] = level*16;
               break;
           case SET_BLUE_2_MULTIPLIER:
-              rgb_r_2[2] *= level+1;
+              rgb_r_2_m[2] = level*16;
               break;
         }
         break;
