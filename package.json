@@ -4,17 +4,22 @@
   "description": "Raspberry Pi software for remote controlling your house. IR, 434mhz, audio, video, beacons and more! Domotica for the win!",
   "main": "app.js",
   "dependencies": {
+    "basic-auth": "^1.0.3",
+    "colors": "^1.1.2",
     "cron": "~1.0.4",
     "express": "^4.10.2",
     "md5": "^2.0.0",
     "microtime": "^2.0.0",
     "moment": "^2.10.6",
     "node-record-lpcm16": "git://github.com/RobQuistNL/node-record-lpcm16.git#feature/extendRecordPrograms",
+    "object-assign": "^4.0.1",
     "prettycron": "^0.10.0",
+    "prompt": "^1.0.0",
     "request": "^2.64.0",
     "socket.io": "^1.3.5",
-    "underscore": "^1.8.3",
-    "sprintf-js": "^1.0.3"
+    "speakable": "^0.3.0",
+    "sprintf-js": "^1.0.3",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {},
   "scripts": {

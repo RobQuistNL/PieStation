@@ -232,7 +232,7 @@ var voicecommands = {
                 url = api + 'forecast/daily?q='+location+'&units=metric&cnt='+diffDays;
             }
             //console.log('Opening url:'+url, diffDays);
-            request(url, function(a, b, body) {
+            request(url + "&APPID=e7b890bc1a9f19b929ece02b8927c250", function(a, b, body) {
                 try {
                     var exported = JSON.parse(body);
                 } catch (e) {
@@ -272,8 +272,8 @@ var voicecommands = {
                     case 'general':
                         sonybravia.setVolume(0);
                         setTimeout(function(){sonybravia.setVolume(tv_volume)}, 10000);
-                        textToSpeech(dateAsText + ' in ' + location + ' i would say "'+description+'". ' +
-                            shorttempstring + '. ' + clouds + ' percent cloudy');
+                        textToSpeech(dateAsText + ' in ' + location + ' the weather is "'+description+'". ' +
+                            tempstring + '. It will be ' + clouds + ' percent cloudy');
                         break;
                     case 'temperature':
                         setTimeout(function(){sonybravia.setVolume(tv_volume)}, 5000);

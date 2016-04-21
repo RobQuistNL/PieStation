@@ -1,0 +1,191 @@
+verb:
+    be:
+        present:
+            tense:
+                i: 'am'
+                we: 'are'
+                you: 'are'
+                hesheit: 'is'
+                they: 'are'
+            participle:
+                i: 'am being'
+                we: 'are being'
+                you: 'are being'
+                hesheit: 'is being'
+                they: 'are being'
+        past:
+            tense:
+                i: 'was'
+                we: 'were'
+                you: 'were'
+                hesheit: 'was'
+                they: 'were'
+            participle:
+                i: 'have been'
+                we: 'have been'
+                you: 'have been'
+                hesheit: 'has been'
+                they: 'have been'
+
+pronoun:
+    personal:
+        singular:
+            first:
+                subjective:
+                    male: 'i'
+                    female: 'i'
+                    object: 'i'
+                objective:
+                    male: 'me'
+                    female: 'me'
+                    object: 'me'
+                posessive:
+                    male:
+                        - mine
+                        - my
+                    female:
+                        - mine
+                        - my
+                    object:
+                        - mine
+                        - my
+            second:
+                subjective:
+                    male: 'you'
+                    female: 'you'
+                    object: 'you'
+                objective:
+                    male: 'you'
+                    female: 'you'
+                    object: 'you'
+                posessive:
+                    male: 'yours'
+                    female: 'yours'
+                    object: 'yours'
+            third:
+                subjective:
+                    male: 'he'
+                    female: 'she'
+                    object: 'it'
+                objective:
+                    male: 'him'
+                    female: 'her'
+                    object: 'it'
+                posessive:
+                    male: 'his'
+                    female: 'hers'
+                    object: 'its'
+        plural:
+            first:
+                subjective:
+                    male: 'we'
+                    female: 'we'
+                    object: 'we'
+                objective:
+                    male: 'us'
+                    female: 'us'
+                    object: 'us'
+                posessive:
+                    male: 'ours'
+                    female: 'ours'
+                    object: 'ours'
+            second:
+                subjective:
+                    male: 'you'
+                    female: 'you'
+                    object: 'you'
+                objective:
+                    male: 'you'
+                    female: 'you'
+                    object: 'you'
+                posessive:
+                    male: 'yours'
+                    female: 'yours'
+                    object: 'yours'
+            third:
+                subjective:
+                    male: 'they'
+                    female: 'they'
+                    object: 'they'
+                objective:
+                    male: 'them'
+                    female: 'them'
+                    object: 'them'
+                posessive:
+                    male: 'theirs'
+                    female: 'theirs'
+                    object: 'theirs'
+
+personal_pronoun:
+    singular:
+        first:
+            subject:
+                male: 'I'
+                female: 'I'
+                object: 'I'
+            object:
+                male: 'me'
+                female: 'me'
+                object: 'me'
+        second:
+            subject:
+                male: 'you'
+                female: 'you'
+                object: 'you'
+            object:
+                male: 'you'
+                female: 'you'
+                object: 'you'
+        third:
+            subject:
+                male: 'he'
+                female: 'she'
+                object: 'it'
+            object:
+                male: 'him'
+                female: 'her'
+                object: 'it'
+    plural:
+        first:
+            subject:
+                male: 'we'
+                female: 'we'
+                object: 'we'
+            object:
+                male: 'us'
+                female: 'us'
+                object: 'us'
+        second:
+            subject:
+                male: 'you'
+                female: 'you'
+                object: 'you'
+            object:
+                male: 'you'
+                female: 'you'
+                object: 'you'
+        third:
+            subject:
+                male: 'they'
+                female: 'they'
+                object: 'they'
+            object:
+                male: 'them'
+                female: 'them'
+                object: 'them'
+
+interrogative_pronoun:
+    person: who
+    location: where
+    moment: when
+    reason: why
+    object: what
+    choice: which
+    method: how
+
+noun:
+    name
+
+proper_noun:
+    Rob
+    Tim
